@@ -1,24 +1,23 @@
 {
-    "name": "robroypt/odoo-client",
+    "name": "tbondois/odoo-ripcord",
     "type": "library",
-    "description": "A PHP Client for Odoo using Ripcord RPC library (as used in Odoo Web API docs)",
+    "description": "A PHP Client for Odoo using Ripcord RPC library, as used in Odoo Web API docs : https://www.odoo.com/documentation/11.0/webservices/odoo.html",
     "keywords": ["RPC", "XML", "XMLRPC", "Odoo"],
-    "homepage": "https://github.com/robroypt/odooclient",
+    "homepage": "https://github.com/tbondois/odoo-ripcord",
     "license": "MIT",
     "authors": [
         {
-            "name": "Rob Roy",
-            "email": "rob@pervasivetelemetry.com.au"
+            "name": "Thomas Bondois",
         }
     ],
     "require": {
-        "php": ">=5.3.0",
-        "darkaonline/ripcord": "0.1.*"
+        "php": ">=7.0",
+        "darkaonline/ripcord": "^0.1.0"
     },
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "OdooClient\\": "src/"
+            "OdooRipcord": "src/"
         }
-    },
-    "minimum-stability": "stable"
+    }
 }
