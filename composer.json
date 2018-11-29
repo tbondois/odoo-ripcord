@@ -16,7 +16,7 @@
     }
   },
   "license": "MIT",
-  "homepage": "https://github.com/tbondois/odoo-ripcord",
+  "homepage": "https://packagist.org/packages/tbondois/odoo-ripcord",
   "authors": [
     {
       "name": "Thomas Bondois"
