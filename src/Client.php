@@ -313,8 +313,4 @@ class Client
         return $this->pid;
     }
 
-
-
-
-
 } // end class
