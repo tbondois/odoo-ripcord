@@ -14,15 +14,15 @@ namespace OdooRipcord;
 class ClientFactory
 {
     /**
-     * @param string $host The url
-     * @param string $db The database to log into
+     * @param string $host The url. Can contain the post or extra path
+     * @param string $db The postgresql database to log into
      * @param string $user The username
      * @param string $password Password of the user
      * @param null|string $apiType Password of the user
      *
      * @return Client
      */
-    public function create($host, $db, $user, $password, $apiType  = null)
+    public function create($host, $db, $user, $password, $apiType  = null) : Client
     {
         return new Client($host, $db, $user, $password, $apiType);
     }

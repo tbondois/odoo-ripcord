@@ -1,21 +1,20 @@
 # OdooRipcord
 
-**WARNING : IN DEVELOPMENT**
-
 OdooRipcord is a PHP7 XML-RPC client for [Odoo][1]. 
 
 Fork of [robroypt/odoo-client][2], a version of [by DarkaOnline][5], the library used in the [Odoo Web Service API documentation for PHP][6].
 
 ## Supported versions
 
-This library should work with Odoo 8.0 or later. If you find any any incompatibilities, please create an issue or submit a pull request.
+This library should work with at least Odoo 8.0 and 11.0. It can be used in framework like Symfony. In Magento2, inject ClientFactory in dependencies.
+If you find any incompatibilities, please create an issue or submit a pull request.
 
 ## Usage
 
 Instantiate a new client.
 
 ```php
-use OdooClient\Client;
+use OdooRipcord\Client;
 ........
 $host = 'example.odoo.com:8080';
 $db = 'example-database';

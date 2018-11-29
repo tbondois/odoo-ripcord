@@ -15,7 +15,7 @@ use Ripcord\Client\Client as RipcordClient;
  */
 class Client
 {
-    const API_TYPE = 'xmlrpc/2/';
+    const API_TYPE = 'xmlrpc/2';
     /**
      * Ripcord Client
      * @var RipcordClient
@@ -69,10 +69,8 @@ class Client
     private $pid;
 
     /**
-     * Odoo constructor
-     *
-     * @param string $host The url
-     * @param string $db The database to log into
+     * @param string $host The url. Can contain the post or extra path
+     * @param string $db The postgresql database to log into
      * @param string $user The username
      * @param string $password Password of the user
      * @param null|string $apiType Password of the user
@@ -82,7 +80,7 @@ class Client
         if ($apiType === null) {
             $apiType = self::API_TYPE;
         }
-        $this->host      = trim($host, '/') . '/' . $apiType;
+        $this->host      = trim($host, '/') . '/' . trim($apiType, '/');
         $this->db        = $db;
         $this->user      = $user;
         $this->password  = $password;
