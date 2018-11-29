@@ -30,7 +30,7 @@ $password = 'yourpassword';
 $client = new Client($host, $db, $user, $password);
 ```
 
-For the client to work you have to exclude the `/xmlrpc/2` part of the url. If you want to use another Odoo API, you can an additional parameter of constructor.
+For the client to work you have to exclude the `/xmlrpc/2` part of the url. If you want to use another Odoo API, add an additional parameter in constructor.
 
 - Or you can instanciate new client via ClientFactory, to centralize configuration and . Example for Magento2 :
 
