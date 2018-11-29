@@ -1,6 +1,6 @@
 <?php
 
-namespace OdooRipcord;
+namespace Ripoo;
 
 use Ripcord\Ripcord;
 use Ripcord\Client\Client as RipcordClient;

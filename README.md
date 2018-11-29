@@ -1,6 +1,6 @@
-# OdooRipcord
+# Ripoo (Ripcord Odoo)
 
-OdooRipcord is a PHP7 XML-RPC client for [Odoo][1]. 
+Ripoo is a PHP7 XML-RPC client for [Odoo][1]. 
 
 Fork of [robroypt/odoo-client][2], a version of [by DarkaOnline][5], the library used in the [Odoo Web Service API documentation for PHP][6].
 
@@ -14,7 +14,7 @@ If you find any incompatibilities, please create an issue or submit a pull reque
 Instantiate a new client.
 
 ```php
-use OdooRipcord\Client;
+use Ripoo\Client;
 ........
 $host = 'example.odoo.com:8080';
 $db = 'example-database';

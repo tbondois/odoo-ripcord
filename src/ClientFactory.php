@@ -1,6 +1,6 @@
 <?php
 
-namespace OdooRipcord;
+namespace Ripoo;
 
 /**
  * Uses ripcord for Odoo 11.0
