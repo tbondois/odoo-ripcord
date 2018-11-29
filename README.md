@@ -2,7 +2,7 @@
 
 **WARNING : IN DEVELOPMENT**
 
-OdooClient is a PHP7 XML-RPC client for [Odoo][1]. 
+OdooRipcord is a PHP7 XML-RPC client for [Odoo][1]. 
 
 Fork of [robroypt/odoo-client][2], a version of [by DarkaOnline][5], the library used in the [Odoo Web Service API documentation for PHP][6].
 
@@ -17,12 +17,12 @@ Instantiate a new client.
 ```php
 use OdooClient\Client;
 ........
-$url = 'example.odoo.com/xmlrpc/2';
-$database = 'example-database';
+$host = 'example.odoo.com:8080';
+$db = 'example-database';
 $user = 'user@email.com';
 $password = 'yourpassword';
 
-$client = new Client($url, $database, $user, $password);
+$client = new Client($host, $db, $user, $password);
 ```
 
 For the client to work you have to include the `/xmlrpc/2` part of the url.

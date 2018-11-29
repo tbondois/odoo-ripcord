@@ -1,6 +1,6 @@
 <?php
 
-namespace TBD\OdooRipcord;
+namespace OdooRipcord;
 
 use Ripcord\Ripcord;
 use Ripcord\Client\Client as RipcordClient;
@@ -15,6 +15,13 @@ use Ripcord\Client\Client as RipcordClient;
  */
 class Client
 {
+    const API_TYPE = 'xmlrpc/2/';
+    /**
+     * Ripcord Client
+     * @var RipcordClient
+     */
+    private $client;
+
     /**
      * Host to connect to
      * @var string
@@ -46,31 +53,41 @@ class Client
     private $password;
 
     /**
-     * Ripcord Client
-     * @var RipcordClient
-     */
-    private $client;
-
-    /**
      * XmlRpc endpoint
      * @var string
      */
     private $endpoint;
 
     /**
+     * @var float
+     */
+    private $createdAt;
+
+    /**
+     * @var string
+     */
+    private $pid;
+
+    /**
      * Odoo constructor
      *
      * @param string $host The url
-     * @param string $database The database to log into
+     * @param string $db The database to log into
      * @param string $user The username
      * @param string $password Password of the user
+     * @param null|string $apiType Password of the user
      */
-    public function __construct($host, $database, $user, $password)
+    public function __construct($host, $db, $user, $password, $apiType = null)
     {
-        $this->host     = $host;
-        $this->db = $database;
-        $this->user     = $user;
-        $this->password = $password;
+        if ($apiType === null) {
+            $apiType = self::API_TYPE;
+        }
+        $this->host      = trim($host, '/') . '/' . $apiType;
+        $this->db        = $db;
+        $this->user      = $user;
+        $this->password  = $password;
+        $this->createdAt = microtime(true);
+        $this->pid       = microtime(true)."/".mt_rand(10000, 99000);
     }
 
     /**
@@ -80,7 +97,7 @@ class Client
      */
     public function version()
     {
-        $response = $this->getClient('common')->version();
+        $response = $this->getRipcordClient('common')->version();
         return $response;
     }
 
@@ -96,7 +113,7 @@ class Client
      */
     public function search($model, $criteria, $offset = 0, $limit = 100, $order = '')
     {
-        $response = $this->getClient('object')->execute_kw(
+        $response = $this->getRipcordClient('object')->execute_kw(
             $this->db,
             $this->uid(),
             $this->password,
@@ -118,7 +135,7 @@ class Client
      */
     public function search_count($model, $criteria)
     {
-        $response = $this->getClient('object')->execute_kw(
+        $response = $this->getRipcordClient('object')->execute_kw(
             $this->db,
             $this->uid(),
             $this->password,
@@ -140,7 +157,7 @@ class Client
      */
     public function read($model, $ids, $fields = [])
     {
-        $response = $this->getClient('object')->execute_kw(
+        $response = $this->getRipcordClient('object')->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'read',
@@ -162,7 +179,7 @@ class Client
      */
     public function search_read($model, $criteria, $fields = [], $limit = 100, $order = '')
     {
-        $response = $this->getClient('object')->execute_kw(
+        $response = $this->getRipcordClient('object')->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search_read',
@@ -182,7 +199,7 @@ class Client
      */
     public function create($model, $data)
     {
-        $response = $this->getClient('object')->execute_kw(
+        $response = $this->getRipcordClient('object')->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'create',
@@ -202,7 +219,7 @@ class Client
      */
     public function write($model, $ids, $fields)
     {
-        $response = $this->getClient('object')->execute_kw(
+        $response = $this->getRipcordClient('object')->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'write',
@@ -224,7 +241,7 @@ class Client
      */
     public function unlink($model, $ids)
     {
-        $response = $this->getClient('object')->execute_kw(
+        $response = $this->getRipcordClient('object')->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'unlink',
@@ -244,7 +261,7 @@ class Client
      *
      * @return RipcordClient
      */
-    private function getClient($endpoint = null) : RipcordClient
+    private function getRipcordClient($endpoint = null) : RipcordClient
     {
         if ($endpoint === null) {
             return $this->client;
@@ -256,7 +273,6 @@ class Client
         $this->client = Ripcord::client($this->host.'/'.$endpoint);
         return $this->client;
     }
-
     /**
      * Get uid
      *
@@ -265,7 +281,7 @@ class Client
     private function uid()
     {
         if ($this->uid === null) {
-            $client = $this->getClient('common');
+            $client = $this->getRipcordClient('common');
             $this->uid = $client->authenticate(
                 $this->db,
                 $this->user,
@@ -275,5 +291,28 @@ class Client
         }
         return $this->uid;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt($asString = false)
+    {
+        if ($asString) {
+            return date('Y-m-d H:i:s', $this->createdAt);
+        }
+        return $this->createdAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPid()
+    {
+        return $this->pid;
+    }
+
+
+
+
 
 } // end class
