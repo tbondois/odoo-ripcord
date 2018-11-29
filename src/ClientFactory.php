@@ -2,7 +2,6 @@
 
 namespace OdooRipcord;
 
-
 /**
  * Uses ripcord for Odoo 11.0
  * @see https://www.odoo.com/documentation/11.0/webservices/odoo.html

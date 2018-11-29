@@ -15,7 +15,8 @@ use Ripcord\Client\Client as RipcordClient;
  */
 class Client
 {
-    const API_TYPE = 'xmlrpc/2';
+    const DEFAULT_API_TYPE = 'xmlrpc/2';
+
     /**
      * Ripcord Client
      * @var RipcordClient
@@ -78,7 +79,7 @@ class Client
     public function __construct($host, $db, $user, $password, $apiType = null)
     {
         if ($apiType === null) {
-            $apiType = self::API_TYPE;
+            $apiType = self::DEFAULT_API_TYPE;
         }
         $this->host      = trim($host, '/') . '/' . trim($apiType, '/');
         $this->db        = $db;
