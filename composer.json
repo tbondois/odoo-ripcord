@@ -1,32 +1,31 @@
 {
-  "name": "tbondois/odoo-ripcord",
-  "description": "A PHP Client for Odoo using Ripcord RPC library, as used in Odoo Web API docs : https://www.odoo.com/documentation/11.0/webservices/odoo.html",
-  "type": "library",
-  "minimum-stability": "stable",
-  "require": {
-    "php": ">=7.0",
-    "darkaonline/ripcord": "^0.1.6"
-  },
-  "require-dev": {
-
-  },
-  "autoload": {
-    "psr-4": {
-      "OdooRipcord\\": "src/"
-    }
-  },
-  "license": "MIT",
-  "homepage": "https://packagist.org/packages/tbondois/odoo-ripcord",
-  "authors": [
-    {
-      "name": "Thomas Bondois"
-    }
-  ],
-  "keywords": [
-    "RPC",
-    "XML",
-    "XMLRPC",
-    "XML-RPC",
-    "Odoo"
-  ]
+    "name": "tbondois/odoo-ripcord",
+    "description": "A PHP Client for Odoo using Ripcord RPC library, as used in Odoo Web API docs : https://www.odoo.com/documentation/11.0/webservices/odoo.html",
+    "type": "library",
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.0",
+        "darkaonline/ripcord": "^0.1.6"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "OdooRipcord\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "homepage": "https://packagist.org/packages/tbondois/odoo-ripcord",
+    "authors": [
+        {
+            "name": "Thomas Bondois"
+        }
+    ],
+    "keywords": [
+        "RPC",
+        "XML",
+        "XMLRPC",
+        "XML-RPC",
+        "Odoo"
+    ]
 }
