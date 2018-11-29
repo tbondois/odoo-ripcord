@@ -60,11 +60,13 @@ class Client
     private $endpoint;
 
     /**
+     * microtimestamp
      * @var float
      */
     private $createdAt;
 
     /**
+     * micro timestamp + rand
      * @var string
      */
     private $pid;
@@ -292,11 +294,12 @@ class Client
     }
 
     /**
+     * @param bool $raw 0 = formatted date, 1 = float (micro timestamp)
      * @return mixed
      */
-    public function getCreatedAt($asString = false)
+    public function getCreatedAt($raw = false)
     {
-        if ($asString) {
+        if ($raw) {
             return date('Y-m-d H:i:s', $this->createdAt);
         }
         return $this->createdAt;
