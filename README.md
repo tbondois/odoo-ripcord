@@ -9,6 +9,12 @@ Fork of [robroypt/odoo-client][2], a version of [by DarkaOnline][5], the library
 This library should work with at least Odoo 8.0 and 11.0. It can be used in all PHP frameworks, like Symfony, Laravel or Magento2.
 If you find any incompatibilities, please create an issue or submit a pull request.
 
+## Installation
+
+```bash
+composer require tbondois/odoo-ripcord
+```
+
 ## Usage
 
 - Instantiate a new client via instance itself
