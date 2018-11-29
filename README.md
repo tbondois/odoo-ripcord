@@ -6,7 +6,7 @@ Fork of [robroypt/odoo-client][2], a version of [by DarkaOnline][5], the library
 
 ## Supported versions
 
-This library should work with at least Odoo 8.0 and 11.0. It can be used in framework like Symfony, Laravel & Magento2.
+This library should work with at least Odoo 8.0 and 11.0. It can be used in all PHP frameworks, like Symfony, Laravel or Magento2.
 If you find any incompatibilities, please create an issue or submit a pull request.
 
 ## Usage
@@ -39,7 +39,7 @@ class Data
         $this->scopeConfig   = $scopeConfig;
     }
 
-    public function createClientWithWebkulConfig() : \Ripoo\Client
+    public function createClient() : \Ripoo\Client
     {
         $odooUrl  = $this->scopeConfig->getValue('my/settings/odoo_url');
         $odooDb   = $this->scopeConfig->getValue('my/settings/odoo_database');
