@@ -6,12 +6,12 @@ Fork of [robroypt/odoo-client][2], a version of [by DarkaOnline][5], the library
 
 ## Supported versions
 
-This library should work with at least Odoo 8.0 and 11.0. It can be used in framework like Symfony. In Magento2, inject ClientFactory in dependencies.
+This library should work with at least Odoo 8.0 and 11.0. It can be used in framework like Symfony, Laravel & Magento2.
 If you find any incompatibilities, please create an issue or submit a pull request.
 
 ## Usage
 
-Instantiate a new client.
+- Instantiate a new client via instance itself
 
 ```php
 use Ripoo\Client;
@@ -24,7 +24,40 @@ $password = 'yourpassword';
 $client = new Client($host, $db, $user, $password);
 ```
 
-For the client to work you have to include the `/xmlrpc/2` part of the url.
+For the client to work you have to exclude the `/xmlrpc/2` part of the url. If you want to use another Odoo API, you can via anoter parameter of constructor.
+
+- Or you can instanciate new client via ClientFactory, to centralize configuration and . Example for Magento2 :
+
+```php
+class Data
+{
+    function __construct(
+        \Ripoo\ClientFactory $clientFactory,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+    ) {
+        $this->clientFactory = $clientFactory;
+        $this->scopeConfig   = $scopeConfig;
+    }
+
+    public function createClientWithWebkulConfig() : \Ripoo\Client
+    {
+        $odooUrl  = $this->scopeConfig->getValue('my/settings/odoo_url');
+        $odooDb   = $this->scopeConfig->getValue('my/settings/odoo_database');
+        $odooUser = $this->scopeConfig->getValue('my/settings/odoo_user');
+        $odooPwd  = $this->scopeConfig->getValue('my/settings/odoo_pwd');
+
+        $host = preg_replace('#^https?://#', '', $odooUrl); // transform url into domain
+
+        $client = $this->clientFactory->create(
+            $host,
+            $odooDb,
+            $odooUser,
+            $odooPwd
+        );
+        return $client;
+     }
+}
+```
 
 ### xmlrpc/2/common endpoint
 

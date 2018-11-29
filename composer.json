@@ -1,6 +1,6 @@
 {
     "name": "tbondois/odoo-ripcord",
-    "description": "A PHP Client for Odoo using Ripcord RPC library, as used in Odoo Web API docs : https://www.odoo.com/documentation/11.0/webservices/odoo.html",
+    "description": "Ripoo : a PHP Client for Odoo using Ripcord XML-RPC library, as used in Odoo Web API docs",
     "type": "library",
     "minimum-stability": "stable",
     "require": {
@@ -22,10 +22,13 @@
         }
     ],
     "keywords": [
+        "Odoo",
+        "API",
         "RPC",
         "XML",
         "XMLRPC",
-        "XML-RPC",
-        "Odoo"
+        "Symfony",
+        "Magento2",
+        "XML-RPC"
     ]
 }
