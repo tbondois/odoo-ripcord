@@ -6,6 +6,9 @@ use Ripoo\Exception\RipooExceptionInterface;
 use Ripoo\Exception\AuthException;
 use Ripoo\Exception\OdooFault;
 use Ripoo\Exception\OdooException;
+use Ripoo\Endpoint\CommonEndpointInterface;
+use Ripoo\Endpoint\ObjectEndpointInterface;
+
 
 use Ripcord\Ripcord;
 use Ripcord\Client\Client as RipcordClient;
@@ -57,12 +60,6 @@ class Client
      * @var string
      */
     private $password;
-
-    /**
-     * XmlRpc endpoint
-     * @var string
-     */
-    private $endpoint;
 
     /**
      * micro timestamp
@@ -126,24 +123,6 @@ class Client
     }
 
     /**
-     * @param $response
-     * @return mixed
-     * @throws OdooFault
-     * @author Thomas Bondois
-     */
-    function checkResponse($response)
-    {
-        if (is_array($response)) {
-            if (isset($response['faultCode'])) {
-                $faultCode = $response['faultCode'];
-                $faultString = $response['faultString'] ?? '';
-                throw new OdooFault($faultString, $faultCode);
-            }
-        }
-        return $response;
-    }
-
-    /**
      * Get uid
      * @param bool $forceRetry
      * @return int $uid
@@ -177,7 +156,7 @@ class Client
      * @throws OdooFault
      * @author Thomas Bondois
      */
-    public function authenticate(bool $forceRetry = false) : bool
+    public function auth(bool $forceRetry = false) : bool
     {
         if ($this->uid($forceRetry)) {
             return true;
@@ -218,7 +197,7 @@ class Client
             );
 
             //TODO analyse result fault etc
-            return (bool)$response;
+            return (bool)$this->checkResponse($response);
 
         } catch (RipooExceptionInterface $exception) {
         }
@@ -246,7 +225,7 @@ class Client
             [$criteria],
             ['offset' => $offset, 'limit' => $limit, 'order' => $order]
         );
-        return $response;
+        return $this->checkResponse($response);
     }
 
     /**
@@ -436,20 +415,20 @@ class Client
 
     /**
      * odoo.service.common.dispatch
-     * @return RipcordClient
+     * @return RipcordClient|CommonEndpointInterface
      * @author Thomas Bondois
      */
-    private function getCommonEndpoint() : RipcordClient
+    private function getCommonEndpoint()
     {
         return $this->getRipcordClient('commmon');
     }
 
     /**
      * odoo.service.common.dispatch
-     * @return RipcordClient
+     * @return RipcordClient|ObjectEndpointInterface
      * @author Thomas Bondois
      */
-    private function getObjectEndpoint() : RipcordClient
+    private function getObjectEndpoint()
     {
         return $this->getRipcordClient('object');
     }
@@ -459,9 +438,28 @@ class Client
      * @return RipcordClient
      * @author Thomas Bondois
      */
-    private function getDbEndpoint() : RipcordClient
+    private function getDbEndpoint()
     {
         return $this->getRipcordClient('db');
+    }
+
+    /**
+     * Throw exception in case it contains an error
+     * @param $response
+     * @return mixed
+     * @throws OdooFault
+     * @author Thomas Bondois
+     */
+    function checkResponse($response)
+    {
+        if (is_array($response)) {
+            if (isset($response['faultCode'])) {
+                $faultCode = $response['faultCode'];
+                $faultString = $response['faultString'] ?? '';
+                throw new OdooFault($faultString, $faultCode);
+            }
+        }
+        return $response;
     }
 
 } // end class
