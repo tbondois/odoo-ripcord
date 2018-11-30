@@ -3,7 +3,7 @@
 namespace Ripoo;
 
 /**
- * Uses ripcord for Odoo 11.0
+ * Factory for creating Client
  * @see https://www.odoo.com/documentation/11.0/webservices/odoo.html
  * @see https://github.com/DarkaOnLine/Ripcord
  * @see https://github.com/robroypt/odoo-client

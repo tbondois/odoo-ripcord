@@ -77,7 +77,7 @@ class Client
     private $pid;
 
     /**
-     * @param string $host The url. Can contain the post or extra path
+     * @param string $host The url. Can contain the :port or /sub/directories
      * @param string $db The postgresql database to log into
      * @param string $user The username
      * @param string $password Password of the user
@@ -85,15 +85,18 @@ class Client
      */
     public function __construct($host, $db, $user, $password, $apiType = null)
     {
+        // use customer or default API :
         $apiType = trim($apiType ?? self::DEFAULT_API_TYPE, '/');
-        $host    = trim(preg_replace('#^https?://#', '', $host), '/'); // transform url into domain
+
+        // clean host in case it's an URL or have a final slash :
+        $host    = trim(preg_replace('#^https?://#', '', $host), '/');
 
         $this->host      = $host . '/' . $apiType;
         $this->db        = $db;
         $this->user      = $user;
         $this->password  = $password;
         $this->createdAt = microtime(true);
-        $this->pid       = $apiType.microtime(true)."-".mt_rand(10000, 99000);
+        $this->pid       = '#'.$apiType.'-'.microtime(true)."-".mt_rand(10000, 99000);
     }
 
     /**
@@ -103,7 +106,7 @@ class Client
      */
     public function version()
     {
-        $response = $this->getRipcordClient('common')->version();
+        $response = $this->getCommonEndpoint()->version();
         return $response;
     }
 
@@ -111,13 +114,11 @@ class Client
      * @param bool $forceRetry
      * @return bool
      * @throws AuthException
+     * @author Thomas Bondois
      */
     public function authenticate(bool $forceRetry = false) : bool
     {
-        if ($forceRetry) {
-            $this->uid = null;
-        }
-        if ($this->uid()) {
+        if ($this->uid($forceRetry)) {
             return true;
         }
         return false;
@@ -128,6 +129,7 @@ class Client
      * @param string $permission ex: 'read'
      * @param bool $withExceptions
      * @return bool
+     * @author Thomas Bondois
      */
     public function check_access_rights(string $model, string $permission = 'read', bool $withExceptions = false) : bool
     {
@@ -135,7 +137,7 @@ class Client
             $permission = [$permission];
         }
         try {
-            $response = $this->getRipcordClient('object')->execute_kw(
+            $response = $this->getObjectEndpoint()->execute_kw(
                 $this->db, $this->uid(), $this->password,
                 $model,
                 'check_access_rights',
@@ -164,7 +166,7 @@ class Client
      */
     public function search(string $model, array $criteria, $offset = 0, $limit = 100, $order = '')
     {
-        $response = $this->getRipcordClient('object')->execute_kw(
+        $response = $this->getObjectEndpoint()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search',
@@ -185,7 +187,7 @@ class Client
      */
     public function search_count(string $model, array $criteria)
     {
-        $response = $this->getRipcordClient('object')->execute_kw(
+        $response = $this->getObjectEndpoint()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search_count',
@@ -206,7 +208,7 @@ class Client
      */
     public function read(string $model, array $ids, array $fields = [])
     {
-        $response = $this->getRipcordClient('object')->execute_kw(
+        $response = $this->getObjectEndpoint()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'read',
@@ -230,7 +232,7 @@ class Client
      */
     public function search_read(string $model, array $criteria, array $fields = [], int $limit = 100, $order = '')
     {
-        $response = $this->getRipcordClient('object')->execute_kw(
+        $response = $this->getObjectEndpoint()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search_read',
@@ -244,7 +246,6 @@ class Client
         return $response;
     }
 
-
     /**
      * @see https://www.odoo.com/documentation/11.0/reference/orm.html#odoo.models.Model.fields_get
      * @param string $model
@@ -252,10 +253,11 @@ class Client
      * @param array $attributes
      * @return mixed
      * @throws AuthException
+     * @author Thomas Bondois
      */
     public function fields_get(string $model, array $fields = [], array $attributes = [])
     {
-        $response = $this->getRipcordClient('object')->execute_kw(
+        $response = $this->getObjectEndpoint()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'fields_get',
@@ -276,7 +278,7 @@ class Client
      */
     public function create(string $model, $data)
     {
-        $response = $this->getRipcordClient('object')->execute_kw(
+        $response = $this->getObjectEndpoint()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'create',
@@ -297,7 +299,7 @@ class Client
      */
     public function write(string $model, $ids, $fields)
     {
-        $response = $this->getRipcordClient('object')->execute_kw(
+        $response = $this->getObjectEndpoint()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'write',
@@ -320,7 +322,7 @@ class Client
      */
     private function unlink(string $model, $ids)
     {
-        $response = $this->getRipcordClient('object')->execute_kw(
+        $response = $this->getObjectEndpoint()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'unlink',
@@ -331,14 +333,14 @@ class Client
 
     /**
      * Get uid
-     *
+     * @param bool $forceRetry
      * @return int $uid
      * @throws AuthException
      */
-    private function uid()
+    private function uid(bool $forceRetry = false)
     {
-        if ($this->uid === null) {
-            $client = $this->getRipcordClient('common');
+        if ($this->uid === null || $forceRetry) {
+            $client = $this->getCommonEndpoint();
             $this->uid = $client->authenticate(
                 $this->db, $this->user, $this->password,
                 []
@@ -353,6 +355,24 @@ class Client
             }
         }
         return $this->uid;
+    }
+
+    /**
+     * @return RipcordClient
+     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     */
+    private function getObjectEndpoint() : RipcordClient
+    {
+        return $this->getRipcordClient('object');
+    }
+
+    /**
+     * @return RipcordClient
+     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     */
+    private function getCommonEndpoint() : RipcordClient
+    {
+        return $this->getRipcordClient('commmon');
     }
 
     /**
@@ -374,8 +394,8 @@ class Client
         if ($this->endpoint === $endpoint) {
             return $this->client;
         }
+        $this->client   = Ripcord::client($this->host.'/'.$endpoint);
         $this->endpoint = $endpoint;
-        $this->client = Ripcord::client($this->host.'/'.$endpoint);
         return $this->client;
     }
 
