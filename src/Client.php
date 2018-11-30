@@ -65,13 +65,13 @@ class Client
     private $endpoint;
 
     /**
-     * microtimestamp
+     * micro timestamp
      * @var float
      */
     private $createdAt;
 
     /**
-     * micro timestamp + rand
+     * unique client instance identifier
      * @var string
      */
     private $pid;
@@ -85,15 +85,15 @@ class Client
      */
     public function __construct($host, $db, $user, $password, $apiType = null)
     {
-        if ($apiType === null) {
-            $apiType = self::DEFAULT_API_TYPE;
-        }
-        $this->host      = trim($host, '/') . '/' . trim($apiType, '/');
+        $apiType = trim($apiType ?? self::DEFAULT_API_TYPE, '/');
+        $host    = trim(preg_replace('#^https?://#', '', $host), '/'); // transform url into domain
+
+        $this->host      = $host . '/' . $apiType;
         $this->db        = $db;
         $this->user      = $user;
         $this->password  = $password;
         $this->createdAt = microtime(true);
-        $this->pid       = microtime(true)."/".mt_rand(10000, 99000);
+        $this->pid       = $apiType.microtime(true)."-".mt_rand(10000, 99000);
     }
 
     /**
@@ -385,7 +385,7 @@ class Client
      */
     public function getCreatedAt($raw = false)
     {
-        if ($raw) {
+        if (!$raw) {
             return date('Y-m-d H:i:s', $this->createdAt);
         }
         return $this->createdAt;
