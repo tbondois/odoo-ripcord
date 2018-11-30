@@ -13,7 +13,7 @@ namespace Ripoo;
 class ClientFactory
 {
     /**
-     * @param string $host The url. Can contain the post or extra path
+     * @param string $url The url. Can contain the post or extra path
      * @param string $db The postgresql database to log into
      * @param string $user The username
      * @param string $password Password of the user
@@ -21,9 +21,9 @@ class ClientFactory
      *
      * @return Client
      */
-    public function create($host, $db, $user, $password, $apiType  = null) : Client
+    public function create($url, $db, $user, $password, $apiType  = null) : Client
     {
-        return new Client($host, $db, $user, $password, $apiType);
+        return new Client($url, $db, $user, $password, $apiType);
     }
 
 

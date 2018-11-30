@@ -6,7 +6,7 @@ Fork of [robroypt/odoo-client][2], using [darkaonline/ripcord][5], the library u
 
 ## Supported versions
 
-This library should work with all versions of Odoo, at least from 8.0 to 11.0. It can be used in all PHP frameworks, like Symfony, Laravel or Magento2.
+This library should work with all versions of Odoo, at least the 8.0. It can be used in all PHP frameworks, like Symfony, Laravel or Magento2.
 If you find any incompatibilities, please create an issue or submit a pull request.
 
 ## Installation
@@ -31,11 +31,13 @@ $client = new Client($host, $db, $user, $password);
 ```
 - Or you can instanciate new client via ClientFactory, to centralize configuration use good Design Patterns . 
 
-Example for Magento2 :
+Basic sample for Magento2 :
 
 ```php
 class OdooManager
 {
+    ...
+    
     function __construct(
         \Ripoo\ClientFactory $clientFactory,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
@@ -46,19 +48,29 @@ class OdooManager
 
     public function createClient() : \Ripoo\Client
     {
+        // TODO secure injections
         $odooUrl  = $this->scopeConfig->getValue('my/settings/odoo_url');
         $odooDb   = $this->scopeConfig->getValue('my/settings/odoo_database');
         $odooUser = $this->scopeConfig->getValue('my/settings/odoo_user');
         $odooPwd  = $this->scopeConfig->getValue('my/settings/odoo_pwd');
 
-        $client = $this->clientFactory->create(
+        $this->client = $this->clientFactory->create(
             $host,
             $odooDb,
             $odooUser,
             $odooPwd
         );
-        return $client;
-     }
+        return $this->client;
+    }
+    
+    public function getClient() : Client
+    {
+        // You can force nenewing a Client based on createdAt
+        if (!$this->client) {
+            $this->client = $this->createClient();
+        }
+        return $this->client;
+    }
 }
 ```
 

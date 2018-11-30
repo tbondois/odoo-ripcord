@@ -4,7 +4,7 @@ namespace Ripoo;
 
 use Ripoo\Exception\RipooExceptionInterface;
 use Ripoo\Exception\AuthException;
-use Ripoo\Exception\ConnectException;
+use Ripoo\Exception\OdooFault;
 use Ripoo\Exception\OdooException;
 
 use Ripcord\Ripcord;
@@ -32,7 +32,7 @@ class Client
      * Host to connect to
      * @var string
      */
-    private $host;
+    private $url;
 
     /**
      * Unique identifier for current user
@@ -77,21 +77,27 @@ class Client
     private $pid;
 
     /**
-     * @param string $host The url. Can contain the :port or /sub/directories
+     * For Cache purpose, associative array('endpoint' => Client)
+     * @var RipcordClient[]
+     */
+    private $endpoints = [];
+
+    /**
+     * @param string $url The url. Can contain the protocol, :port or /sub/directories
      * @param string $db The postgresql database to log into
      * @param string $user The username
      * @param string $password Password of the user
      * @param null|string $apiType Password of the user
      */
-    public function __construct($host, $db, $user, $password, $apiType = null)
+    public function __construct($url, $db, $user, $password, $apiType = null)
     {
         // use customer or default API :
-        $apiType = trim($apiType ?? self::DEFAULT_API_TYPE, '/');
+        $apiType = trim($apiType ?? self::DEFAULT_API_TYPE, ' /');
 
-        // clean host in case it's an URL or have a final slash :
-        $host    = trim(preg_replace('#^https?://#', '', $host), '/');
+        // clean host if it have a final slash :
+        $url    = trim($url, ' /');
 
-        $this->host      = $host . '/' . $apiType;
+        $this->url       = $url . '/' . $apiType;
         $this->db        = $db;
         $this->user      = $user;
         $this->password  = $password;
@@ -100,20 +106,75 @@ class Client
     }
 
     /**
-     * Get version
-     *
-     * @return array Odoo version
+     * @param bool $raw 0 = formatted date, 1 = float (micro timestamp)
+     * @return mixed
      */
-    public function version()
+    public function getCreatedAt($raw = false)
     {
-        $response = $this->getCommonEndpoint()->version();
+        if (!$raw) {
+            return date('Y-m-d H:i:s', $this->createdAt);
+        }
+        return $this->createdAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPid()
+    {
+        return $this->pid;
+    }
+
+    /**
+     * @param $response
+     * @return mixed
+     * @throws OdooFault
+     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     */
+    function checkResponse($response)
+    {
+        if (is_array($response)) {
+            if (isset($response['faultCode'])) {
+                $faultCode = $response['faultCode'];
+                $faultString = $response['faultString'] ?? '';
+                throw new OdooFault($faultString, $faultCode);
+            }
+        }
         return $response;
+    }
+
+    /**
+     * Get uid
+     * @param bool $forceRetry
+     * @return int $uid
+     * @throws AuthException
+     * @throws OdooFault
+     */
+    private function uid(bool $forceRetry = false)
+    {
+        if ($this->uid === null || $forceRetry) {
+            $client = $this->getCommonEndpoint();
+            $this->uid = $client->authenticate(
+                $this->db, $this->user, $this->password,
+                []
+            );
+
+            if (!is_int($this->uid)) {
+                if (is_array($this->uid) && array_key_exists('faultCode', $this->uid)) {
+                    throw new OdooFault($this->uid['faultString'], $this->uid['faultCode']);
+                } else {
+                    throw new AuthException('Unsuccessful Authorization');
+                }
+            }
+        }
+        return $this->uid;
     }
 
     /**
      * @param bool $forceRetry
      * @return bool
      * @throws AuthException
+     * @throws OdooFault
      * @author Thomas Bondois
      */
     public function authenticate(bool $forceRetry = false) : bool
@@ -122,6 +183,17 @@ class Client
             return true;
         }
         return false;
+    }
+    /**
+     * Get version
+     *
+     * @return array Odoo version
+     * @throws OdooFault
+     */
+    public function version()
+    {
+        $response = $this->getCommonEndpoint()->version();
+        return $this->checkResponse($response);
     }
 
     /**
@@ -332,50 +404,6 @@ class Client
     }
 
     /**
-     * Get uid
-     * @param bool $forceRetry
-     * @return int $uid
-     * @throws AuthException
-     */
-    private function uid(bool $forceRetry = false)
-    {
-        if ($this->uid === null || $forceRetry) {
-            $client = $this->getCommonEndpoint();
-            $this->uid = $client->authenticate(
-                $this->db, $this->user, $this->password,
-                []
-            );
-
-            if (!is_int($this->uid)) {
-                if (is_array($this->uid) && array_key_exists('faultCode', $this->uid)) {
-                    throw new AuthException($this->uid['faultCode']);
-                } else {
-                    throw new AuthException('Unsuccessful Authorization');
-                }
-            }
-        }
-        return $this->uid;
-    }
-
-    /**
-     * @return RipcordClient
-     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
-     */
-    private function getObjectEndpoint() : RipcordClient
-    {
-        return $this->getRipcordClient('object');
-    }
-
-    /**
-     * @return RipcordClient
-     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
-     */
-    private function getCommonEndpoint() : RipcordClient
-    {
-        return $this->getRipcordClient('commmon');
-    }
-
-    /**
      * Get XmlRpc Client
      *
      * This method returns an XmlRpc Client for the requested endpoint.
@@ -391,32 +419,41 @@ class Client
         if ($endpoint === null) {
             return $this->client;
         }
-        if ($this->endpoint === $endpoint) {
-            return $this->client;
+        if (!empty($this->endpoints[$endpoint])) {
+            return $this->endpoints[$endpoint];
         }
-        $this->client   = Ripcord::client($this->host.'/'.$endpoint);
-        $this->endpoint = $endpoint;
-        return $this->client;
+        $this->endpoints[$endpoint] = Ripcord::client($this->url.'/'.$endpoint);
+        return $this->endpoints[$endpoint];
     }
 
     /**
-     * @param bool $raw 0 = formatted date, 1 = float (micro timestamp)
-     * @return mixed
+     * odoo.service.common.dispatch
+     * @return RipcordClient
+     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
      */
-    public function getCreatedAt($raw = false)
+    private function getCommonEndpoint() : RipcordClient
     {
-        if (!$raw) {
-            return date('Y-m-d H:i:s', $this->createdAt);
-        }
-        return $this->createdAt;
+        return $this->getRipcordClient('commmon');
     }
 
     /**
-     * @return string
+     * odoo.service.common.dispatch
+     * @return RipcordClient
+     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
      */
-    public function getPid()
+    private function getObjectEndpoint() : RipcordClient
     {
-        return $this->pid;
+        return $this->getRipcordClient('object');
+    }
+
+    /**
+     * odoo.service.db.dispatch
+     * @return RipcordClient
+     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     */
+    private function getDbEndpoint() : RipcordClient
+    {
+        return $this->getRipcordClient('db');
     }
 
 } // end class
