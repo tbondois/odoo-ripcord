@@ -17,7 +17,7 @@ composer require tbondois/odoo-ripcord
 
 ## Usage
 
-- Instantiate a new client via instance itself
+- Instantiate a new client via instance itself :
 
 ```php
 use Ripoo\Client;
@@ -29,9 +29,6 @@ $password = 'yourpassword';
 
 $client = new Client($host, $db, $user, $password);
 ```
-
-For the client to work you have to exclude the `/xmlrpc/2` part of the url. If you want to use another Odoo API, put it in the optional 5th parameter of constructor.
-
 - Or you can instanciate new client via ClientFactory, to centralize configuration and . Example for Magento2 :
 
 ```php
@@ -64,6 +61,8 @@ class Data
      }
 }
 ```
+
+For the client to work you have to exclude the `/xmlrpc/2` part of the url. If you want to use another Odoo API, put it in the optional 5th parameter of constructor.
 
 ### xmlrpc/2/common endpoint
 

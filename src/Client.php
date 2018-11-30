@@ -2,6 +2,11 @@
 
 namespace Ripoo;
 
+use Ripoo\Exception\RipooExceptionInterface;
+use Ripoo\Exception\AuthException;
+use Ripoo\Exception\ConnectException;
+use Ripoo\Exception\OdooException;
+
 use Ripcord\Ripcord;
 use Ripcord\Client\Client as RipcordClient;
 
@@ -103,6 +108,50 @@ class Client
     }
 
     /**
+     * @param bool $forceRetry
+     * @return bool
+     * @throws AuthException
+     */
+    public function authenticate(bool $forceRetry = false) : bool
+    {
+        if ($forceRetry) {
+            $this->uid = null;
+        }
+        if ($this->uid()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $model
+     * @param string $permission ex: 'read'
+     * @param bool $withExceptions
+     * @return bool
+     */
+    public function check_access_rights(string $model, string $permission = 'read', bool $withExceptions = false) : bool
+    {
+        if (!is_array($permission)) {
+            $permission = [$permission];
+        }
+        try {
+            $response = $this->getRipcordClient('object')->execute_kw(
+                $this->db, $this->uid(), $this->password,
+                $model,
+                'check_access_rights',
+                $permission,
+                ['raise_exception' => $withExceptions]
+            );
+
+            //TODO analyse result fault etc
+            return (bool)$response;
+
+        } catch (RipooExceptionInterface $exception) {
+        }
+        return false;
+    }
+
+    /**
      * Search models
      *
      * @param string $model Model
@@ -111,13 +160,12 @@ class Client
      * @param integer $limit Max results
      *
      * @return array Array of model id's
+     * @throws AuthException
      */
-    public function search($model, $criteria, $offset = 0, $limit = 100, $order = '')
+    public function search(string $model, array $criteria, $offset = 0, $limit = 100, $order = '')
     {
         $response = $this->getRipcordClient('object')->execute_kw(
-            $this->db,
-            $this->uid(),
-            $this->password,
+            $this->db, $this->uid(), $this->password,
             $model,
             'search',
             [$criteria],
@@ -133,13 +181,12 @@ class Client
      * @param array $criteria Array of criteria
      *
      * @return array Array of model id's
+     * @throws AuthException
      */
-    public function search_count($model, $criteria)
+    public function search_count(string $model, array $criteria)
     {
         $response = $this->getRipcordClient('object')->execute_kw(
-            $this->db,
-            $this->uid(),
-            $this->password,
+            $this->db, $this->uid(), $this->password,
             $model,
             'search_count',
             [$criteria]
@@ -155,8 +202,9 @@ class Client
      * @param array $fields Index array of fields to fetch, an empty array fetches all fields
      *
      * @return array An array of models
+     * @throws AuthException
      */
-    public function read($model, $ids, $fields = [])
+    public function read(string $model, array $ids, array $fields = [])
     {
         $response = $this->getRipcordClient('object')->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -175,17 +223,44 @@ class Client
      * @param array $criteria Array of criteria
      * @param array $fields Index array of fields to fetch, an empty array fetches all fields
      * @param integer $limit Max results
+     * @param string $order
      *
      * @return array An array of models
+     * @throws AuthException
      */
-    public function search_read($model, $criteria, $fields = [], $limit = 100, $order = '')
+    public function search_read(string $model, array $criteria, array $fields = [], int $limit = 100, $order = '')
     {
         $response = $this->getRipcordClient('object')->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search_read',
             [$criteria],
-            ['fields' => $fields, 'limit' => $limit, 'order' => $order]
+            [
+                'fields' => $fields,
+                'limit' => $limit,
+                'order' => $order,
+            ]
+        );
+        return $response;
+    }
+
+
+    /**
+     * @see https://www.odoo.com/documentation/11.0/reference/orm.html#odoo.models.Model.fields_get
+     * @param string $model
+     * @param array $fields
+     * @param array $attributes
+     * @return mixed
+     * @throws AuthException
+     */
+    public function fields_get(string $model, array $fields = [], array $attributes = [])
+    {
+        $response = $this->getRipcordClient('object')->execute_kw(
+            $this->db, $this->uid(), $this->password,
+            $model,
+            'fields_get',
+            $fields,
+            ['attributes' => $attributes]
         );
         return $response;
     }
@@ -197,8 +272,9 @@ class Client
      * @param array $data Array of fields with data (format: ['field' => 'value'])
      *
      * @return int Created model id
+     * @throws AuthException
      */
-    public function create($model, $data)
+    public function create(string $model, $data)
     {
         $response = $this->getRipcordClient('object')->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -217,8 +293,9 @@ class Client
      * @param array $fields A associative array (format: ['field' => 'value'])
      *
      * @return array
+     * @throws AuthException
      */
-    public function write($model, $ids, $fields)
+    public function write(string $model, $ids, $fields)
     {
         $response = $this->getRipcordClient('object')->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -239,8 +316,9 @@ class Client
      * @param array $ids Array of model id's
      *
      * @return boolean True is successful
+     * @throws AuthException
      */
-    public function unlink($model, $ids)
+    private function unlink(string $model, $ids)
     {
         $response = $this->getRipcordClient('object')->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -249,6 +327,32 @@ class Client
             [$ids]
         );
         return $response;
+    }
+
+    /**
+     * Get uid
+     *
+     * @return int $uid
+     * @throws AuthException
+     */
+    private function uid()
+    {
+        if ($this->uid === null) {
+            $client = $this->getRipcordClient('common');
+            $this->uid = $client->authenticate(
+                $this->db, $this->user, $this->password,
+                []
+            );
+
+            if (!is_int($this->uid)) {
+                if (is_array($this->uid) && array_key_exists('faultCode', $this->uid)) {
+                    throw new AuthException($this->uid['faultCode']);
+                } else {
+                    throw new AuthException('Unsuccessful Authorization');
+                }
+            }
+        }
+        return $this->uid;
     }
 
     /**
@@ -273,24 +377,6 @@ class Client
         $this->endpoint = $endpoint;
         $this->client = Ripcord::client($this->host.'/'.$endpoint);
         return $this->client;
-    }
-    /**
-     * Get uid
-     *
-     * @return int $uid
-     */
-    private function uid()
-    {
-        if ($this->uid === null) {
-            $client = $this->getRipcordClient('common');
-            $this->uid = $client->authenticate(
-                $this->db,
-                $this->user,
-                $this->password,
-                []
-            );
-        }
-        return $this->uid;
     }
 
     /**
