@@ -129,7 +129,7 @@ class Client
      * @param $response
      * @return mixed
      * @throws OdooFault
-     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     * @author Thomas Bondois
      */
     function checkResponse($response)
     {
@@ -235,6 +235,7 @@ class Client
      *
      * @return array Array of model id's
      * @throws AuthException
+     * @throws OdooFault
      */
     public function search(string $model, array $criteria, $offset = 0, $limit = 100, $order = '')
     {
@@ -256,6 +257,7 @@ class Client
      *
      * @return array Array of model id's
      * @throws AuthException
+     * @throws OdooFault
      */
     public function search_count(string $model, array $criteria)
     {
@@ -277,6 +279,7 @@ class Client
      *
      * @return array An array of models
      * @throws AuthException
+     * @throws OdooFault
      */
     public function read(string $model, array $ids, array $fields = [])
     {
@@ -301,6 +304,7 @@ class Client
      *
      * @return array An array of models
      * @throws AuthException
+     * @throws OdooFault
      */
     public function search_read(string $model, array $criteria, array $fields = [], int $limit = 100, $order = '')
     {
@@ -325,6 +329,7 @@ class Client
      * @param array $attributes
      * @return mixed
      * @throws AuthException
+     * @throws OdooFault
      * @author Thomas Bondois
      */
     public function fields_get(string $model, array $fields = [], array $attributes = [])
@@ -347,6 +352,7 @@ class Client
      *
      * @return int Created model id
      * @throws AuthException
+     * @throws OdooFault
      */
     public function create(string $model, $data)
     {
@@ -368,6 +374,7 @@ class Client
      *
      * @return array
      * @throws AuthException
+     * @throws OdooFault
      */
     public function write(string $model, $ids, $fields)
     {
@@ -391,6 +398,7 @@ class Client
      *
      * @return boolean True is successful
      * @throws AuthException
+     * @throws OdooFault
      */
     private function unlink(string $model, $ids)
     {
@@ -429,7 +437,7 @@ class Client
     /**
      * odoo.service.common.dispatch
      * @return RipcordClient
-     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     * @author Thomas Bondois
      */
     private function getCommonEndpoint() : RipcordClient
     {
@@ -439,7 +447,7 @@ class Client
     /**
      * odoo.service.common.dispatch
      * @return RipcordClient
-     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     * @author Thomas Bondois
      */
     private function getObjectEndpoint() : RipcordClient
     {
@@ -449,7 +457,7 @@ class Client
     /**
      * odoo.service.db.dispatch
      * @return RipcordClient
-     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     * @author Thomas Bondois
      */
     private function getDbEndpoint() : RipcordClient
     {
