@@ -20,14 +20,14 @@ composer require tbondois/odoo-ripcord
 - Instantiate a new client via instance itself :
 
 ```php
-use Ripoo\Client;
+use Ripoo\OdooClient;
 ........
 $host = 'example.odoo.com:8080';
 $db = 'example-database';
 $user = 'user@email.com';
 $password = 'yourpassword';
 
-$client = new Client($host, $db, $user, $password);
+$client = new OdooClient($host, $db, $user, $password);
 ```
 - Or you can instanciate new client via ClientFactory, to centralize configuration use good Design Patterns . 
 
@@ -39,14 +39,14 @@ class OdooManager
     ...
     
     function __construct(
-        \Ripoo\ClientFactory $clientFactory,
+        \Ripoo\OdooClientFactory $clientFactory,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         $this->clientFactory = $clientFactory;
         $this->scopeConfig   = $scopeConfig;
     }
 
-    public function createClient() : \Ripoo\Client
+    public function createClient() : \Ripoo\OdooClient
     {
         // TODO secure injections
         $odooUrl  = $this->scopeConfig->getValue('my/settings/odoo_url');
