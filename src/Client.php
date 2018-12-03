@@ -5,7 +5,8 @@ namespace Ripoo;
 use Ripoo\Exception\RipooExceptionInterface;
 use Ripoo\Exception\AuthException;
 use Ripoo\Exception\OdooFault;
-use Ripoo\Exception\OdooException;
+use Ripoo\Exception\CodingException;
+use Ripoo\Exception\ResponseStatusException;
 use Ripoo\Service\CommonServiceInterface;
 use Ripoo\Service\DbServiceInterface;
 use Ripoo\Service\ModelServiceInterface;
@@ -24,12 +25,6 @@ use Ripcord\Client\Client as RipcordClient;
 class Client
 {
     const DEFAULT_API_TYPE = 'xmlrpc/2';
-
-    /**
-     * Ripcord Client
-     * @var RipcordClient
-     */
-    private $client;
 
     /**
      * Host to connect to
@@ -74,19 +69,25 @@ class Client
     private $pid;
 
     /**
+     * @var string
+     */
+    private $currentEndpoint = null;
+
+    /**
      * For Cache purpose, associative array('endpoint' => Client)
      * @var RipcordClient[]
      */
-    private $services = [];
+    private $endpoints = [];
+
 
     /**
-     * @param string $url The url. Can contain the protocol, :port or /sub/directories
-     * @param string $db The postgresql database to log into
-     * @param string $user The username
-     * @param string $password Password of the user
-     * @param null|string $apiType Password of the user
+     * @param string $url The Odoo url. Must contain the protocol like https://, can also :port or /sub/directories
+     * @param ?string $db PostgreSQL database of Odoo to log into
+     * @param ?string $user The username (Odoo 11 : is email)
+     * @param ?string $password Password of the user
+     * @param ?string $apiType if not using xmlrpc/2
      */
-    public function __construct($url, $db, $user, $password, $apiType = null)
+    public function __construct(string $url, $db = null, $user = null, $password = null, $apiType = null)
     {
         // use customer or default API :
         $apiType = trim($apiType ?? self::DEFAULT_API_TYPE, ' /');
@@ -132,8 +133,8 @@ class Client
     private function uid(bool $reAuth = false)
     {
         if ($this->uid === null || $reAuth) {
-            $client = $this->getCommonService();
-            $this->uid = $client->authenticate(
+            $common = $this->getRipcordClient('common');
+            $this->uid = $common->authenticate(
                 $this->db, $this->user, $this->password,
                 []
             );
@@ -154,7 +155,7 @@ class Client
      * @return bool
      * @author Thomas Bondois
      */
-    public function auth(bool $reAuth = false) : bool
+    public function testAuthenticate(bool $reAuth = false) : bool
     {
         try {
             if ($this->uid($reAuth)) {
@@ -168,12 +169,13 @@ class Client
     /**
      * Get version
      *
-     * @return array Odoo version
+     * @return array
      * @throws OdooFault
      */
     public function version()
     {
-        $response = $this->getCommonService()->version();
+        $response = $this->getRipcordClient('common')->version();
+        //$response = $this->getCommonService()->version(); // TODO understand why crash Odoo
         return $this->checkResponse($response);
     }
 
@@ -381,7 +383,7 @@ class Client
      * @throws AuthException
      * @throws OdooFault
      */
-    private function unlink(string $model, $ids)
+    public function unlink(string $model, $ids)
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -396,7 +398,7 @@ class Client
      * @return string
      * @throws OdooFault
      */
-    private function server_version()
+    public function server_version()
     {
         $response = $this->getDbService()->server_version();
         return $this->checkResponse($response);
@@ -409,25 +411,37 @@ class Client
      * If no endpoint is specified or if a client for the requested endpoint is
      * already initialized, the last used client will be returned.
      *
-     * @param null|string $service The api endpoint
+     * @param string $endpoint The api endpoint
      *
      * @return RipcordClient
      */
-    private function getRipcordClient($service = null) : RipcordClient
+    public function getRipcordClient(string $endpoint) : RipcordClient
     {
-        if ($service === null) {
-            return $this->client;
+        $endpoint = trim($endpoint, " /");
+        if (!empty($this->endpoints[$endpoint])) {
+            return $this->endpoints[$endpoint];
         }
-        if (!empty($this->services[$service])) {
-            return $this->services[$service];
-        }
-        $this->services[$service] = Ripcord::client($this->url.'/'.$service);
-        return $this->services[$service];
+        $this->endpoints[$endpoint] = Ripcord::client($this->url.'/'.$endpoint);
+        $this->currentEndpoint = $endpoint;
+        return $this->endpoints[$endpoint];
     }
+
+    public function getCurrentRipcordClient(): RipcordClient
+    {
+        if (!$this->currentEndpoint || empty($this->endpoints[$this->currentEndpoint])) {
+            throw new CodingException("Need to make a first call before getting the current client");
+        }
+        return $this->endpoints[$this->currentEndpoint];
+    }
+
 
     /**
      * odoo.service.common.dispatch
      * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/common.py
+     *
+     * TODO understand why odoo return fault (UnboundLocalError: local variable 'dispatch' referenced before assignment),
+     * if we use getCommonService()->version, and no fault if we we getRipcordClient('commmon')->version()
+     *
      * @return RipcordClient|CommonServiceInterface
      * @author Thomas Bondois
      */
@@ -461,7 +475,7 @@ class Client
     /**
      * Throw exception in case it contains an error
      * @TODO check "status", "status_message"
-     * @param $response
+     * @param mixed $response
      * @return mixed
      * @throws OdooFault
      * @author Thomas Bondois

@@ -14,7 +14,7 @@ interface DbServiceInterface
     /**
      * @return string
      */
-    public function server_version() :string;
+    public function server_version() : string;
 
     /**
      * @param $db_name

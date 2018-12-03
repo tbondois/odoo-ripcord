@@ -13,18 +13,28 @@ namespace Ripoo;
 class ClientFactory
 {
     /**
-     * @param string $url The url. Can contain the post or extra path
-     * @param string $db The postgresql database to log into
-     * @param string $user The username
+     * @param string $url The Odoo url. Must contain the protocol like https://, can also :port or /sub/directories
+     * @param string $db The PostgreSQL database of Odoo to log into
+     * @param string $user The username (Odoo 11 : is email)
      * @param string $password Password of the user
-     * @param null|string $apiType Password of the user
+     * @param ?string $apiType if not using xmlrpc/2
      *
      * @return Client
      */
-    public function create($url, $db, $user, $password, $apiType  = null) : Client
+    public function create(string $url, string $db , string $user, string $password, $apiType  = null) : Client
     {
         return new Client($url, $db, $user, $password, $apiType);
     }
 
+    /**
+     * Useful only for API method not requiring authentification, like version() and server_version()
+     * @param $url
+     *
+     * @return Client
+     */
+    public function createAnonymous($url) : Client
+    {
+        return new Client($url);
+    }
 
 } // end class
