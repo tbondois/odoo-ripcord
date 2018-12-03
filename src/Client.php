@@ -6,9 +6,9 @@ use Ripoo\Exception\RipooExceptionInterface;
 use Ripoo\Exception\AuthException;
 use Ripoo\Exception\OdooFault;
 use Ripoo\Exception\OdooException;
-use Ripoo\Endpoint\CommonEndpointInterface;
-use Ripoo\Endpoint\ObjectEndpointInterface;
-use Ripoo\Endpoint\DbEndpointInterface;
+use Ripoo\Service\CommonServiceInterface;
+use Ripoo\Service\DbServiceInterface;
+use Ripoo\Service\ModelServiceInterface;
 
 use Ripcord\Ripcord;
 use Ripcord\Client\Client as RipcordClient;
@@ -164,6 +164,7 @@ class Client
         }
         return false;
     }
+
     /**
      * Get version
      *
@@ -427,7 +428,7 @@ class Client
     /**
      * odoo.service.common.dispatch
      * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/common.py
-     * @return RipcordClient|CommonEndpointInterface
+     * @return RipcordClient|CommonServiceInterface
      * @author Thomas Bondois
      */
     private function getCommonService()
@@ -438,7 +439,7 @@ class Client
     /**
      * odoo.service.db.dispatch
      * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/db.py
-     * @return RipcordClient|DbEndpointInterface
+     * @return RipcordClient|DbServiceInterface
      */
     private function getDbService()
     {
@@ -446,9 +447,10 @@ class Client
     }
 
     /**
+     * "Object" Endpoint, "Model" service
      * odoo.service.model.dispatch
      * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/model.py
-     * @return RipcordClient|ObjectEndpointInterface
+     * @return RipcordClient|ModelServiceInterface
      * @author Thomas Bondois
      */
     private function getModelService()

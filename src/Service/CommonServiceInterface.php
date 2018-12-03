@@ -1,6 +1,6 @@
 <?php
 
-namespace Ripoo\Endpoint;
+namespace Ripoo\Service;
 
 use Ripoo\Client;
 use Ripcord\Client\Client as RipcorClient;
@@ -9,7 +9,7 @@ use Ripcord\Client\Client as RipcorClient;
  * @author Thomas Bondois
  * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/common.py
  */
-interface CommonEndpointInterface
+interface CommonServiceInterface
 {
     /**
      * @return array
