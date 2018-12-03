@@ -154,7 +154,7 @@ class Client
      * @return bool
      * @author Thomas Bondois
      */
-    public function checkAuth(bool $reAuth = false) : bool
+    public function auth(bool $reAuth = false) : bool
     {
         try {
             if ($this->uid($reAuth)) {
