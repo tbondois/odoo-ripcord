@@ -8,7 +8,7 @@ use Ripoo\Exception\OdooFault;
 use Ripoo\Exception\OdooException;
 use Ripoo\Endpoint\CommonEndpointInterface;
 use Ripoo\Endpoint\ObjectEndpointInterface;
-
+use Ripoo\Endpoint\DbEndpointInterface;
 
 use Ripcord\Ripcord;
 use Ripcord\Client\Client as RipcordClient;
@@ -124,14 +124,14 @@ class Client
 
     /**
      * Get uid
-     * @param bool $forceRetry
+     * @param bool $reAuth
      * @return int $uid
      * @throws AuthException
      * @throws OdooFault
      */
-    private function uid(bool $forceRetry = false)
+    private function uid(bool $reAuth = false)
     {
-        if ($this->uid === null || $forceRetry) {
+        if ($this->uid === null || $reAuth) {
             $client = $this->getCommonEndpoint();
             $this->uid = $client->authenticate(
                 $this->db, $this->user, $this->password,
@@ -150,16 +150,17 @@ class Client
     }
 
     /**
-     * @param bool $forceRetry
+     * @param bool $reAuth
      * @return bool
-     * @throws AuthException
-     * @throws OdooFault
      * @author Thomas Bondois
      */
-    public function auth(bool $forceRetry = false) : bool
+    public function checkAuth(bool $reAuth = false) : bool
     {
-        if ($this->uid($forceRetry)) {
-            return true;
+        try {
+            if ($this->uid($reAuth)) {
+                return true;
+            }
+        } catch (\Throwable $e) {
         }
         return false;
     }
@@ -387,7 +388,17 @@ class Client
             'unlink',
             [$ids]
         );
-        return $response;
+        return $this->checkResponse($response);
+    }
+
+    /**
+     * @return string
+     * @throws OdooFault
+     */
+    private function server_version()
+    {
+        $response = $this->getDbEndpoint()->server_version();
+        return $this->checkResponse($response);
     }
 
     /**
@@ -435,8 +446,7 @@ class Client
 
     /**
      * odoo.service.db.dispatch
-     * @return RipcordClient
-     * @author Thomas Bondois
+     * @return RipcordClient|DbEndpointInterface
      */
     private function getDbEndpoint()
     {
@@ -445,12 +455,13 @@ class Client
 
     /**
      * Throw exception in case it contains an error
+     * @TODO check "status", "status_message"
      * @param $response
      * @return mixed
      * @throws OdooFault
      * @author Thomas Bondois
      */
-    function checkResponse($response)
+    public function checkResponse($response)
     {
         if (is_array($response)) {
             if (isset($response['faultCode'])) {
