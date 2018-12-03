@@ -13,16 +13,16 @@ namespace Ripoo;
 class OdooClientFactory
 {
     /**
-     * @param string $url The Odoo url. Must contain the protocol like https://, can also :port or /sub/directories
-     * @param ?string $db The PostgreSQL database of Odoo to log into
-     * @param ?string $user The username (Odoo 11 : is email)
-     * @param ?string $password Password of the user
-     * @param ?string $apiType if not using xmlrpc/2
+     * @param string $url
+     * @param ?string $db
+     * @param ?string $user
+     * @param ?string $password
+     * @param ?string $apiPath
      * @return OdooClient
      */
-    public function create(string $url, $db = null, $user = null, $password = null, $apiType  = null) : OdooClient
+    public function create(string $url, $db = null, $user = null, $password = null, $apiPath  = null) : OdooClient
     {
-        return new OdooClient($url, $db, $user, $password, $apiType);
+        return new OdooClient($url, $db, $user, $password, $apiPath);
     }
 
     /**
@@ -34,21 +34,21 @@ class OdooClientFactory
      * @param ?string $apiType
      * @return OdooClient
      */
-    public function createAuthenticated(string $url, string $db , string $user, string $password, $apiType  = null) : OdooClient
+    public function createAuthenticated(string $url, string $db , string $user, string $password, $apiPath  = null) : OdooClient
     {
-        return new OdooClient($url, $db, $user, $password, $apiType);
+        return new OdooClient($url, $db, $user, $password, $apiPath);
     }
 
 
     /**
      * Useful only for API method not requiring authentification, like version() and server_version()
      * @param string $url
-     * @param ?string $apiTyppe
+     * @param ?string $apiPath
      * @return OdooClient
      */
-    public function createAnonymous($url, $apiType = null) : OdooClient
+    public function createAnonymous($url, $apiPath = null) : OdooClient
     {
-        return new OdooClient($url, null, null, null, $apiType);
+        return new OdooClient($url, null, null, null, $apiPath);
     }
 
 } // end class

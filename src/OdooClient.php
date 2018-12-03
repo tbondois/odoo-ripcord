@@ -2,29 +2,35 @@
 
 namespace Ripoo;
 
+use Ripoo\Service\CommonServiceInterface;
+use Ripoo\Service\DbServiceInterface;
+use Ripoo\Service\ModelServiceInterface;
+
 use Ripoo\Exception\RipooExceptionInterface;
 use Ripoo\Exception\AuthException;
 use Ripoo\Exception\ResponseFaultException;
 use Ripoo\Exception\CodingException;
 use Ripoo\Exception\ResponseStatusException;
-use Ripoo\Service\CommonServiceInterface;
-use Ripoo\Service\DbServiceInterface;
-use Ripoo\Service\ModelServiceInterface;
 
 use Ripcord\Ripcord;
 use Ripcord\Client\Client as RipcordClient;
 
+
 /**
  * Uses ripcord for Odoo 11.0
  * @see https://www.odoo.com/documentation/11.0/webservices/odoo.html
- * @see https://github.com/DarkaOnLine/Ripcord
- * @see https://github.com/robroypt/odoo-client
+ * @see https://www.odoo.com/documentation/11.0/reference/orm.html#model-reference
  *
  * @author Thomas Bondois
  */
 class OdooClient
 {
-    const DEFAULT_API_TYPE = 'xmlrpc/2';
+    const DEFAULT_API_PATH = 'xmlrpc/2';
+
+    const OPERATION_CREATE  = 'create';
+    const OPERATION_WRITE   = 'write';
+    const OPERATION_READ    = 'read';
+    const OPERATION_UNLINK  = 'unlink';
 
     /**
      * Host to connect to
@@ -81,26 +87,26 @@ class OdooClient
 
 
     /**
-     * @param string $url The Odoo url. Must contain the protocol like https://, can also :port or /sub/directories
-     * @param ?string $db PostgreSQL database of Odoo to log into
+     * @param string $url The Odoo root url. Must contain the protocol like https://, can also :port or /sub/dir
+     * @param ?string $db PostgreSQL database of Odoo containing Odoo tables
      * @param ?string $user The username (Odoo 11 : is email)
      * @param ?string $password Password of the user
-     * @param ?string $apiType if not using xmlrpc/2
+     * @param ?string $apiPath if not using xmlrpc/2
      */
-    public function __construct(string $url, $db = null, $user = null, $password = null, $apiType = null)
+    public function __construct(string $url, $db = null, $user = null, $password = null, $apiPath = null)
     {
         // use customer or default API :
-        $apiType = trim($apiType ?? self::DEFAULT_API_TYPE, ' /');
+        $apiPath = trim($apiPath ?? self::DEFAULT_API_PATH, ' /');
 
         // clean host if it have a final slash :
         $url    = trim($url, ' /');
 
-        $this->url       = $url . '/' . $apiType;
+        $this->url       = $url . '/' . $apiPath;
         $this->db        = $db;
         $this->user      = $user;
         $this->password  = $password;
         $this->createdAt = microtime(true);
-        $this->pid       = '#'.$apiType.'-'.microtime(true)."-".mt_rand(10000, 99000);
+        $this->pid       = '#'.$apiPath.'-'.microtime(true)."-".mt_rand(10000, 99000);
     }
 
     /**
@@ -133,6 +139,9 @@ class OdooClient
     private function uid(bool $reset = false) : int
     {
         if ($this->uid === null || $reset) {
+            if (!$this->db || !$this->user || !$this->password) {
+                throw new AuthException("Authentication data missing");
+            }
             $common = $this->getRipcordClient('common');
             $response = $common->authenticate(
                 $this->db, $this->user, $this->password,
@@ -180,13 +189,14 @@ class OdooClient
     }
 
     /**
+     * @see https://odoo-restapi.readthedocs.io/en/latest/calling_methods/check_access_rights.html
      * @param string $model
-     * @param string $permission ex: 'read'
+     * @param string $permission see OPERATION_* constants
      * @param bool $withExceptions
      * @return bool
      * @author Thomas Bondois
      */
-    public function check_access_rights(string $model, string $permission = 'read', bool $withExceptions = false)
+    public function check_access_rights(string $model, string $permission = self::OPERATION_READ, bool $withExceptions = false)
     {
         if (!is_array($permission)) {
             $permission = [$permission];
@@ -474,7 +484,7 @@ class OdooClient
 
     /**
      * Throw exceptions in case the reponse contains error declarations
-     * @TODO check "status", "status_message"
+     * @TODO check keys "status", "status_message" and raised exception "Error"
      * @param mixed $response
      * @return mixed
      * @throws ResponseFaultException
