@@ -4,7 +4,7 @@ namespace Ripoo;
 
 use Ripoo\Exception\RipooExceptionInterface;
 use Ripoo\Exception\AuthException;
-use Ripoo\Exception\OdooFault;
+use Ripoo\Exception\ResponseFaultException;
 use Ripoo\Exception\CodingException;
 use Ripoo\Exception\ResponseStatusException;
 use Ripoo\Service\CommonServiceInterface;
@@ -22,7 +22,7 @@ use Ripcord\Client\Client as RipcordClient;
  *
  * @author Thomas Bondois
  */
-class Client
+class OdooClient
 {
     const DEFAULT_API_TYPE = 'xmlrpc/2';
 
@@ -128,7 +128,7 @@ class Client
      * @param bool $reset
      * @return int $uid
      * @throws AuthException
-     * @throws OdooFault
+     * @throws ResponseFaultException
      */
     private function uid(bool $reset = false) : int
     {
@@ -141,7 +141,7 @@ class Client
 
             if (!is_int($response)) {
 
-                $this->checkResponse($response);
+                $this->formatResponse($response);
 
                 throw new AuthException('Unsuccessful Authorization');
             }
@@ -170,13 +170,13 @@ class Client
      * Get version
      *
      * @return array
-     * @throws OdooFault
+     * @throws ResponseFaultException
      */
     public function version()
     {
         $response = $this->getRipcordClient('common')->version();
         //$response = $this->getCommonService()->version(); // TODO understand why crash Odoo
-        return $this->checkResponse($response);
+        return $this->formatResponse($response);
     }
 
     /**
@@ -186,7 +186,7 @@ class Client
      * @return bool
      * @author Thomas Bondois
      */
-    public function check_access_rights(string $model, string $permission = 'read', bool $withExceptions = false) : bool
+    public function check_access_rights(string $model, string $permission = 'read', bool $withExceptions = false)
     {
         if (!is_array($permission)) {
             $permission = [$permission];
@@ -201,7 +201,7 @@ class Client
             );
 
             //TODO analyse result fault etc
-            return (bool)$this->checkResponse($response);
+            return (bool)$this->formatResponse($response);
 
         } catch (RipooExceptionInterface $exception) {
         }
@@ -215,10 +215,10 @@ class Client
      * @param array $criteria Array of criteria
      * @param integer $offset Offset
      * @param integer $limit Max results
-     *
+     * @param string $order
      * @return array Array of model id's
      * @throws AuthException
-     * @throws OdooFault
+     * @throws ResponseFaultException
      */
     public function search(string $model, array $criteria, $offset = 0, $limit = 100, $order = '')
     {
@@ -229,7 +229,7 @@ class Client
             [$criteria],
             ['offset' => $offset, 'limit' => $limit, 'order' => $order]
         );
-        return $this->checkResponse($response);
+        return $this->formatResponse($response);
     }
 
     /**
@@ -238,9 +238,9 @@ class Client
      * @param string $model Model
      * @param array $criteria Array of criteria
      *
-     * @return array Array of model id's
+     * @return int
      * @throws AuthException
-     * @throws OdooFault
+     * @throws ResponseFaultException
      */
     public function search_count(string $model, array $criteria)
     {
@@ -250,7 +250,7 @@ class Client
             'search_count',
             [$criteria]
         );
-        return $response;
+        return $this->formatResponse($response);
     }
 
     /**
@@ -262,7 +262,7 @@ class Client
      *
      * @return array An array of models
      * @throws AuthException
-     * @throws OdooFault
+     * @throws ResponseFaultException
      */
     public function read(string $model, array $ids, array $fields = [])
     {
@@ -273,7 +273,7 @@ class Client
             [$ids],
             ['fields' => $fields]
         );
-        return $response;
+        return $this->formatResponse($response);
     }
 
     /**
@@ -287,7 +287,7 @@ class Client
      *
      * @return array An array of models
      * @throws AuthException
-     * @throws OdooFault
+     * @throws ResponseFaultException
      */
     public function search_read(string $model, array $criteria, array $fields = [], int $limit = 100, $order = '')
     {
@@ -302,7 +302,7 @@ class Client
                 'order' => $order,
             ]
         );
-        return $response;
+        return $this->formatResponse($response);
     }
 
     /**
@@ -312,7 +312,7 @@ class Client
      * @param array $attributes
      * @return mixed
      * @throws AuthException
-     * @throws OdooFault
+     * @throws ResponseFaultException
      * @author Thomas Bondois
      */
     public function fields_get(string $model, array $fields = [], array $attributes = [])
@@ -324,7 +324,7 @@ class Client
             $fields,
             ['attributes' => $attributes]
         );
-        return $response;
+        return $this->formatResponse($response);
     }
 
     /**
@@ -335,7 +335,7 @@ class Client
      *
      * @return int Created model id
      * @throws AuthException
-     * @throws OdooFault
+     * @throws ResponseFaultException
      */
     public function create(string $model, $data)
     {
@@ -345,7 +345,7 @@ class Client
             'create',
             [$data]
         );
-        return $response;
+        return $this->formatResponse($response);
     }
 
     /**
@@ -357,7 +357,7 @@ class Client
      *
      * @return array
      * @throws AuthException
-     * @throws OdooFault
+     * @throws ResponseFaultException
      */
     public function write(string $model, $ids, $fields)
     {
@@ -370,7 +370,7 @@ class Client
                 $fields,
             ]
         );
-        return $response;
+        return $this->formatResponse($response);
     }
 
     /**
@@ -381,7 +381,7 @@ class Client
      *
      * @return boolean True is successful
      * @throws AuthException
-     * @throws OdooFault
+     * @throws ResponseFaultException
      */
     public function unlink(string $model, $ids)
     {
@@ -391,17 +391,17 @@ class Client
             'unlink',
             [$ids]
         );
-        return $this->checkResponse($response);
+        return $this->formatResponse($response);
     }
 
     /**
      * @return string
-     * @throws OdooFault
+     * @throws ResponseFaultException
      */
     public function server_version()
     {
         $response = $this->getDbService()->server_version();
-        return $this->checkResponse($response);
+        return $this->formatResponse($response);
     }
 
     /**
@@ -426,7 +426,7 @@ class Client
         return $this->endpoints[$endpoint];
     }
 
-    public function getCurrentRipcordClient(): RipcordClient
+    public function getCurrentRipcordClient() : RipcordClient
     {
         if (!$this->currentEndpoint || empty($this->endpoints[$this->currentEndpoint])) {
             throw new CodingException("Need to make a first call before getting the current client");
@@ -445,7 +445,7 @@ class Client
      * @return RipcordClient|CommonServiceInterface
      * @author Thomas Bondois
      */
-    private function getCommonService()
+    public function getCommonService() : RipcordClient
     {
         return $this->getRipcordClient('commmon');
     }
@@ -455,7 +455,7 @@ class Client
      * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/db.py
      * @return RipcordClient|DbServiceInterface
      */
-    private function getDbService()
+    public function getDbService() : RipcordClient
     {
         return $this->getRipcordClient('db');
     }
@@ -467,26 +467,26 @@ class Client
      * @return RipcordClient|ModelServiceInterface
      * @author Thomas Bondois
      */
-    private function getModelService()
+    public function getModelService() : RipcordClient
     {
         return $this->getRipcordClient('object');
     }
 
     /**
-     * Throw exception in case it contains an error
+     * Throw exceptions in case the reponse contains error declarations
      * @TODO check "status", "status_message"
      * @param mixed $response
      * @return mixed
-     * @throws OdooFault
+     * @throws ResponseFaultException
      * @author Thomas Bondois
      */
-    public function checkResponse($response)
+    public function formatResponse($response)
     {
         if (is_array($response)) {
             if (isset($response['faultCode'])) {
                 $faultCode = $response['faultCode'];
                 $faultString = $response['faultString'] ?? '';
-                throw new OdooFault($faultString, $faultCode);
+                throw new ResponseFaultException($faultString, $faultCode);
             }
         }
         return $response;

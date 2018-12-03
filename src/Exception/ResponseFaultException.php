@@ -5,7 +5,7 @@ namespace Ripoo\Exception;
 /**
  * @author Thomas Bondois
  */
-class OdooFault extends \Exception implements RipooExceptionInterface
+class ResponseFaultException extends \Exception implements RipooExceptionInterface
 {
     public function __construct(string $message = "", int $code, \Throwable $previous = null)
     {

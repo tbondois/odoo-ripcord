@@ -2,7 +2,7 @@
 
 namespace Ripoo\Service;
 
-use Ripoo\Client;
+use Ripoo\OdooClient;
 use Ripcord\Client\Client as RipcorClient;
 
 /**
