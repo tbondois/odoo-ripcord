@@ -125,14 +125,14 @@ class Client
 
     /**
      * Get uid
-     * @param bool $reAuth
+     * @param bool $reset
      * @return int $uid
      * @throws AuthException
      * @throws OdooFault
      */
-    private function uid(bool $reAuth = false)
+    private function uid(bool $reset = false) : int
     {
-        if ($this->uid === null || $reAuth) {
+        if ($this->uid === null || $reset) {
             $common = $this->getRipcordClient('common');
             $this->uid = $common->authenticate(
                 $this->db, $this->user, $this->password,
@@ -151,14 +151,14 @@ class Client
     }
 
     /**
-     * @param bool $reAuth
+     * @param bool $reset
      * @return bool
      * @author Thomas Bondois
      */
-    public function testAuthenticate(bool $reAuth = false) : bool
+    public function testAuthenticate(bool $reset = false) : bool
     {
         try {
-            if ($this->uid($reAuth)) {
+            if ($this->uid($reset)) {
                 return true;
             }
         } catch (\Throwable $e) {
