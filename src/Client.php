@@ -77,7 +77,7 @@ class Client
      * For Cache purpose, associative array('endpoint' => Client)
      * @var RipcordClient[]
      */
-    private $endpoints = [];
+    private $services = [];
 
     /**
      * @param string $url The url. Can contain the protocol, :port or /sub/directories
@@ -132,7 +132,7 @@ class Client
     private function uid(bool $reAuth = false)
     {
         if ($this->uid === null || $reAuth) {
-            $client = $this->getCommonEndpoint();
+            $client = $this->getCommonService();
             $this->uid = $client->authenticate(
                 $this->db, $this->user, $this->password,
                 []
@@ -172,7 +172,7 @@ class Client
      */
     public function version()
     {
-        $response = $this->getCommonEndpoint()->version();
+        $response = $this->getCommonService()->version();
         return $this->checkResponse($response);
     }
 
@@ -189,7 +189,7 @@ class Client
             $permission = [$permission];
         }
         try {
-            $response = $this->getObjectEndpoint()->execute_kw(
+            $response = $this->getModelService()->execute_kw(
                 $this->db, $this->uid(), $this->password,
                 $model,
                 'check_access_rights',
@@ -219,7 +219,7 @@ class Client
      */
     public function search(string $model, array $criteria, $offset = 0, $limit = 100, $order = '')
     {
-        $response = $this->getObjectEndpoint()->execute_kw(
+        $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search',
@@ -241,7 +241,7 @@ class Client
      */
     public function search_count(string $model, array $criteria)
     {
-        $response = $this->getObjectEndpoint()->execute_kw(
+        $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search_count',
@@ -263,7 +263,7 @@ class Client
      */
     public function read(string $model, array $ids, array $fields = [])
     {
-        $response = $this->getObjectEndpoint()->execute_kw(
+        $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'read',
@@ -288,7 +288,7 @@ class Client
      */
     public function search_read(string $model, array $criteria, array $fields = [], int $limit = 100, $order = '')
     {
-        $response = $this->getObjectEndpoint()->execute_kw(
+        $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search_read',
@@ -314,7 +314,7 @@ class Client
      */
     public function fields_get(string $model, array $fields = [], array $attributes = [])
     {
-        $response = $this->getObjectEndpoint()->execute_kw(
+        $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'fields_get',
@@ -336,7 +336,7 @@ class Client
      */
     public function create(string $model, $data)
     {
-        $response = $this->getObjectEndpoint()->execute_kw(
+        $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'create',
@@ -358,7 +358,7 @@ class Client
      */
     public function write(string $model, $ids, $fields)
     {
-        $response = $this->getObjectEndpoint()->execute_kw(
+        $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'write',
@@ -382,7 +382,7 @@ class Client
      */
     private function unlink(string $model, $ids)
     {
-        $response = $this->getObjectEndpoint()->execute_kw(
+        $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'unlink',
@@ -397,7 +397,7 @@ class Client
      */
     private function server_version()
     {
-        $response = $this->getDbEndpoint()->server_version();
+        $response = $this->getDbService()->server_version();
         return $this->checkResponse($response);
     }
 
@@ -408,49 +408,52 @@ class Client
      * If no endpoint is specified or if a client for the requested endpoint is
      * already initialized, the last used client will be returned.
      *
-     * @param null|string $endpoint The api endpoint
+     * @param null|string $service The api endpoint
      *
      * @return RipcordClient
      */
-    private function getRipcordClient($endpoint = null) : RipcordClient
+    private function getRipcordClient($service = null) : RipcordClient
     {
-        if ($endpoint === null) {
+        if ($service === null) {
             return $this->client;
         }
-        if (!empty($this->endpoints[$endpoint])) {
-            return $this->endpoints[$endpoint];
+        if (!empty($this->services[$service])) {
+            return $this->services[$service];
         }
-        $this->endpoints[$endpoint] = Ripcord::client($this->url.'/'.$endpoint);
-        return $this->endpoints[$endpoint];
+        $this->services[$service] = Ripcord::client($this->url.'/'.$service);
+        return $this->services[$service];
     }
 
     /**
      * odoo.service.common.dispatch
+     * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/common.py
      * @return RipcordClient|CommonEndpointInterface
      * @author Thomas Bondois
      */
-    private function getCommonEndpoint()
+    private function getCommonService()
     {
         return $this->getRipcordClient('commmon');
     }
 
     /**
-     * odoo.service.common.dispatch
-     * @return RipcordClient|ObjectEndpointInterface
-     * @author Thomas Bondois
+     * odoo.service.db.dispatch
+     * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/db.py
+     * @return RipcordClient|DbEndpointInterface
      */
-    private function getObjectEndpoint()
+    private function getDbService()
     {
-        return $this->getRipcordClient('object');
+        return $this->getRipcordClient('db');
     }
 
     /**
-     * odoo.service.db.dispatch
-     * @return RipcordClient|DbEndpointInterface
+     * odoo.service.model.dispatch
+     * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/model.py
+     * @return RipcordClient|ObjectEndpointInterface
+     * @author Thomas Bondois
      */
-    private function getDbEndpoint()
+    private function getModelService()
     {
-        return $this->getRipcordClient('db');
+        return $this->getRipcordClient('object');
     }
 
     /**
