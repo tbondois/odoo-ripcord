@@ -134,18 +134,18 @@ class Client
     {
         if ($this->uid === null || $reset) {
             $common = $this->getRipcordClient('common');
-            $this->uid = $common->authenticate(
+            $response = $common->authenticate(
                 $this->db, $this->user, $this->password,
                 []
             );
 
-            if (!is_int($this->uid)) {
-                if (is_array($this->uid) && array_key_exists('faultCode', $this->uid)) {
-                    throw new OdooFault($this->uid['faultString'], $this->uid['faultCode']);
-                } else {
-                    throw new AuthException('Unsuccessful Authorization');
-                }
+            if (!is_int($response)) {
+
+                $this->checkResponse($response);
+
+                throw new AuthException('Unsuccessful Authorization');
             }
+            $this->uid = $response;
         }
         return $this->uid;
     }
