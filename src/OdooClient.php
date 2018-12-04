@@ -2,30 +2,30 @@
 
 namespace Ripoo;
 
-use Ripoo\Service\CommonServiceInterface;
-use Ripoo\Service\DbServiceInterface;
-use Ripoo\Service\ModelServiceInterface;
-
-use Ripoo\Exception\RipooExceptionInterface;
-use Ripoo\Exception\AuthException;
 use Ripoo\Exception\ResponseFaultException;
 use Ripoo\Exception\CodingException;
 use Ripoo\Exception\ResponseStatusException;
-
-use Ripcord\Ripcord;
+use Ripoo\Handler\CommonHandler;
+use Ripoo\Handler\DbHandler;
+use Ripoo\Handler\ModelHandler;
+use Ripoo\Service\ServiceFactory;
 use Ripcord\Client\Client as RipcordClient;
 
-
 /**
- * Uses ripcord for Odoo 11.0
+ * Uses Ripcord XML-RPC optimized for Odoo >=8.0
  * @see https://www.odoo.com/documentation/11.0/webservices/odoo.html
- * @see https://www.odoo.com/documentation/11.0/reference/orm.html#model-reference
  *
  * @author Thomas Bondois
  */
 class OdooClient
 {
-    const DEFAULT_API_PATH = 'xmlrpc/2';
+    use CommonHandler, DbHandler, ModelHandler;
+
+    const DEFAULT_API       = 'xmlrpc/2';
+
+    const ENDPOINT_MODEL    = 'object';
+    const ENDPOINT_COMMON   = 'common';
+    const ENDPOINT_DB       = 'db';
 
     const OPERATION_CREATE  = 'create';
     const OPERATION_WRITE   = 'write';
@@ -77,31 +77,34 @@ class OdooClient
     /**
      * @var string
      */
-    private $currentEndpoint = null;
+    private $currentService = null;
 
     /**
      * For Cache purpose, associative array('endpoint' => Client)
      * @var RipcordClient[]
      */
-    private $endpoints = [];
+    private $services = [];
 
+    protected $serviceFactory;
 
     /**
-     * @param string $url The Odoo root url. Must contain the protocol like https://, can also :port or /sub/dir
+     * @param string $baseUrl The Odoo root url. Must contain the protocol like https://, can also :port or /sub/dir
      * @param ?string $db PostgreSQL database of Odoo containing Odoo tables
      * @param ?string $user The username (Odoo 11 : is email)
      * @param ?string $password Password of the user
      * @param ?string $apiPath if not using xmlrpc/2
      */
-    public function __construct(string $url, $db = null, $user = null, $password = null, $apiPath = null)
+    public function __construct(string $baseUrl, $db = null, $user = null, $password = null, $apiPath = null)
     {
+        $this->serviceFactory = new ServiceFactory();
+
         // use customer or default API :
-        $apiPath = trim($apiPath ?? self::DEFAULT_API_PATH, ' /');
+        $apiPath = trim($apiPath ?? self::DEFAULT_API, ' /');
 
         // clean host if it have a final slash :
-        $url    = trim($url, ' /');
+        $baseUrl    = trim($baseUrl, ' /');
 
-        $this->url       = $url . '/' . $apiPath;
+        $this->url       = $baseUrl . '/' . $apiPath;
         $this->db        = $db;
         $this->user      = $user;
         $this->password  = $password;
@@ -130,291 +133,6 @@ class OdooClient
     }
 
     /**
-     * Get uid
-     * @param bool $reset
-     * @return int $uid
-     * @throws AuthException
-     * @throws ResponseFaultException
-     */
-    private function uid(bool $reset = false) : int
-    {
-        if ($this->uid === null || $reset) {
-            if (!$this->db || !$this->user || !$this->password) {
-                throw new AuthException("Authentication data missing");
-            }
-            $common = $this->getRipcordClient('common');
-            $response = $common->authenticate(
-                $this->db, $this->user, $this->password,
-                []
-            );
-
-            if (!is_int($response)) {
-
-                $this->formatResponse($response);
-
-                throw new AuthException('Unsuccessful Authorization');
-            }
-            $this->uid = $response;
-        }
-        return $this->uid;
-    }
-
-    /**
-     * @param bool $reset
-     * @return bool
-     * @author Thomas Bondois
-     */
-    public function testAuthenticate(bool $reset = false) : bool
-    {
-        try {
-            if ($this->uid($reset)) {
-                return true;
-            }
-        } catch (\Throwable $e) {
-        }
-        return false;
-    }
-
-    /**
-     * Get version
-     *
-     * @return array
-     * @throws ResponseFaultException
-     */
-    public function version()
-    {
-        $response = $this->getRipcordClient('common')->version();
-        //$response = $this->getCommonService()->version(); // TODO understand why crash Odoo
-        return $this->formatResponse($response);
-    }
-
-    /**
-     * @see https://odoo-restapi.readthedocs.io/en/latest/calling_methods/check_access_rights.html
-     * @param string $model
-     * @param string $permission see OPERATION_* constants
-     * @param bool $withExceptions
-     * @return bool
-     * @author Thomas Bondois
-     */
-    public function check_access_rights(string $model, string $permission = self::OPERATION_READ, bool $withExceptions = false)
-    {
-        if (!is_array($permission)) {
-            $permission = [$permission];
-        }
-        try {
-            $response = $this->getModelService()->execute_kw(
-                $this->db, $this->uid(), $this->password,
-                $model,
-                'check_access_rights',
-                $permission,
-                ['raise_exception' => $withExceptions]
-            );
-
-            //TODO analyse result fault etc
-            return (bool)$this->formatResponse($response);
-
-        } catch (RipooExceptionInterface $exception) {
-        }
-        return false;
-    }
-
-    /**
-     * Search models
-     *
-     * @param string $model Model
-     * @param array $criteria Array of criteria
-     * @param integer $offset Offset
-     * @param integer $limit Max results
-     * @param string $order
-     * @return array Array of model id's
-     * @throws AuthException
-     * @throws ResponseFaultException
-     */
-    public function search(string $model, array $criteria, $offset = 0, $limit = 100, $order = '')
-    {
-        $response = $this->getModelService()->execute_kw(
-            $this->db, $this->uid(), $this->password,
-            $model,
-            'search',
-            [$criteria],
-            ['offset' => $offset, 'limit' => $limit, 'order' => $order]
-        );
-        return $this->formatResponse($response);
-    }
-
-    /**
-     * Search_count models
-     *
-     * @param string $model Model
-     * @param array $criteria Array of criteria
-     *
-     * @return int
-     * @throws AuthException
-     * @throws ResponseFaultException
-     */
-    public function search_count(string $model, array $criteria)
-    {
-        $response = $this->getModelService()->execute_kw(
-            $this->db, $this->uid(), $this->password,
-            $model,
-            'search_count',
-            [$criteria]
-        );
-        return $this->formatResponse($response);
-    }
-
-    /**
-     * Read model(s)
-     *
-     * @param string $model Model
-     * @param array $ids Array of model id's
-     * @param array $fields Index array of fields to fetch, an empty array fetches all fields
-     *
-     * @return array An array of models
-     * @throws AuthException
-     * @throws ResponseFaultException
-     */
-    public function read(string $model, array $ids, array $fields = [])
-    {
-        $response = $this->getModelService()->execute_kw(
-            $this->db, $this->uid(), $this->password,
-            $model,
-            'read',
-            [$ids],
-            ['fields' => $fields]
-        );
-        return $this->formatResponse($response);
-    }
-
-    /**
-     * Search and Read model(s)
-     *
-     * @param string $model Model
-     * @param array $criteria Array of criteria
-     * @param array $fields Index array of fields to fetch, an empty array fetches all fields
-     * @param integer $limit Max results
-     * @param string $order
-     *
-     * @return array An array of models
-     * @throws AuthException
-     * @throws ResponseFaultException
-     */
-    public function search_read(string $model, array $criteria, array $fields = [], int $limit = 100, $order = '')
-    {
-        $response = $this->getModelService()->execute_kw(
-            $this->db, $this->uid(), $this->password,
-            $model,
-            'search_read',
-            [$criteria],
-            [
-                'fields' => $fields,
-                'limit' => $limit,
-                'order' => $order,
-            ]
-        );
-        return $this->formatResponse($response);
-    }
-
-    /**
-     * @see https://www.odoo.com/documentation/11.0/reference/orm.html#odoo.models.Model.fields_get
-     * @param string $model
-     * @param array $fields
-     * @param array $attributes
-     * @return mixed
-     * @throws AuthException
-     * @throws ResponseFaultException
-     * @author Thomas Bondois
-     */
-    public function fields_get(string $model, array $fields = [], array $attributes = [])
-    {
-        $response = $this->getModelService()->execute_kw(
-            $this->db, $this->uid(), $this->password,
-            $model,
-            'fields_get',
-            $fields,
-            ['attributes' => $attributes]
-        );
-        return $this->formatResponse($response);
-    }
-
-    /**
-     * Create model
-     *
-     * @param string $model Model
-     * @param array $data Array of fields with data (format: ['field' => 'value'])
-     *
-     * @return int Created model id
-     * @throws AuthException
-     * @throws ResponseFaultException
-     */
-    public function create(string $model, $data)
-    {
-        $response = $this->getModelService()->execute_kw(
-            $this->db, $this->uid(), $this->password,
-            $model,
-            'create',
-            [$data]
-        );
-        return $this->formatResponse($response);
-    }
-
-    /**
-     * Update model(s)
-     *
-     * @param string $model Model
-     * @param array $ids Model ids to update
-     * @param array $fields A associative array (format: ['field' => 'value'])
-     *
-     * @return array
-     * @throws AuthException
-     * @throws ResponseFaultException
-     */
-    public function write(string $model, $ids, $fields)
-    {
-        $response = $this->getModelService()->execute_kw(
-            $this->db, $this->uid(), $this->password,
-            $model,
-            'write',
-            [
-                $ids,
-                $fields,
-            ]
-        );
-        return $this->formatResponse($response);
-    }
-
-    /**
-     * Unlink model(s)
-     *
-     * @param string $model Model
-     * @param array $ids Array of model id's
-     *
-     * @return boolean True is successful
-     * @throws AuthException
-     * @throws ResponseFaultException
-     */
-    public function unlink(string $model, $ids)
-    {
-        $response = $this->getModelService()->execute_kw(
-            $this->db, $this->uid(), $this->password,
-            $model,
-            'unlink',
-            [$ids]
-        );
-        return $this->formatResponse($response);
-    }
-
-    /**
-     * @return string
-     * @throws ResponseFaultException
-     */
-    public function server_version()
-    {
-        $response = $this->getDbService()->server_version();
-        return $this->formatResponse($response);
-    }
-
-    /**
      * Get XmlRpc Client
      *
      * This method returns an XmlRpc Client for the requested endpoint.
@@ -422,69 +140,33 @@ class OdooClient
      * already initialized, the last used client will be returned.
      *
      * @param string $endpoint The api endpoint
-     *
      * @return RipcordClient
+     * @throws \Ripcord\Exceptions\ConfigurationException
      */
     public function getRipcordClient(string $endpoint) : RipcordClient
     {
         $endpoint = trim($endpoint, " /");
-        if (!empty($this->endpoints[$endpoint])) {
-            return $this->endpoints[$endpoint];
+        if (!empty($this->services[$endpoint])) {
+            return $this->services[$endpoint];
         }
-        $this->endpoints[$endpoint] = Ripcord::client($this->url.'/'.$endpoint);
-        $this->currentEndpoint = $endpoint;
-        return $this->endpoints[$endpoint];
+        //$this->services[$endpoint] = Ripcord::client($this->url.'/'.$endpoint);
+        $this->services[$endpoint] = $this->serviceFactory->create($endpoint, $this->url);
+        $this->currentService = $endpoint;
+        return $this->services[$endpoint];
     }
 
     public function getCurrentRipcordClient() : RipcordClient
     {
-        if (!$this->currentEndpoint || empty($this->endpoints[$this->currentEndpoint])) {
+        if (!$this->currentService || empty($this->services[$this->currentService])) {
             throw new CodingException("Need to make a first call before getting the current client");
         }
-        return $this->endpoints[$this->currentEndpoint];
-    }
-
-
-    /**
-     * odoo.service.common.dispatch
-     * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/common.py
-     *
-     * TODO understand why odoo return fault (UnboundLocalError: local variable 'dispatch' referenced before assignment),
-     * if we use getCommonService()->version, and no fault if we we getRipcordClient('commmon')->version()
-     *
-     * @return RipcordClient|CommonServiceInterface
-     * @author Thomas Bondois
-     */
-    public function getCommonService() : RipcordClient
-    {
-        return $this->getRipcordClient('commmon');
-    }
-
-    /**
-     * odoo.service.db.dispatch
-     * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/db.py
-     * @return RipcordClient|DbServiceInterface
-     */
-    public function getDbService() : RipcordClient
-    {
-        return $this->getRipcordClient('db');
-    }
-
-    /**
-     * "Object" Endpoint, "Model" service
-     * odoo.service.model.dispatch
-     * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/model.py
-     * @return RipcordClient|ModelServiceInterface
-     * @author Thomas Bondois
-     */
-    public function getModelService() : RipcordClient
-    {
-        return $this->getRipcordClient('object');
+        return $this->services[$this->currentService];
     }
 
     /**
      * Throw exceptions in case the reponse contains error declarations
      * @TODO check keys "status", "status_message" and raised exception "Error"
+     *
      * @param mixed $response
      * @return mixed
      * @throws ResponseFaultException

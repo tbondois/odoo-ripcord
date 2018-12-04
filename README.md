@@ -6,7 +6,7 @@ Fork of [robroypt/odoo-client][2], using [darkaonline/ripcord][5], the library u
 
 ## Supported versions
 
-This library should work with all versions of Odoo, at least the 8.0. It can be used in all PHP frameworks, like Symfony, Laravel or Magento2.
+This library should work with all versions of Odoo, **at least between 8.0 and 11.0**. It can be used in all PHP frameworks, like Symfony, Laravel or Magento2.
 If you find any incompatibilities, please create an issue or submit a pull request.
 
 ## Installation
@@ -78,7 +78,7 @@ For the client to work you have to exclude the `http://` and `/xmlrpc/2` parts i
 
 ### xmlrpc/2/common endpoint
 
-Getting version information.
+Getting version information:
 
 ```php
 $client->version();
@@ -88,7 +88,7 @@ There is no login/authenticate method. The client does authentication for you, t
 
 ### xmlrpc/2/object endpoint
 
-Search for records.
+Search for records:
 
 ```php
 $criteria = [
@@ -110,7 +110,7 @@ $criteria = [
 $client->search_count('res.partner', $criteria);
 ```
 
-Reading records.
+Reading records:
 
 ```php
 $ids = $client->search('res.partner', [['customer', '=', true]], 0, 10);
@@ -120,7 +120,7 @@ $fields = ['name', 'email', 'customer'];
 $customers = $client->read('res.partner', $ids, $fields);
 ```
 
-Search and Read records.
+Search and Read records:
 
 ```php
 $criteria = [
@@ -132,7 +132,7 @@ $fields = ['name', 'email', 'customer'];
 $customers = $client->search_read('res.partner', $criteria, $fields, 10);
 ```
 
-Creating records.
+Creating records:
 
 ```php
 $data = [
@@ -143,7 +143,7 @@ $data = [
 $id = $client->create('res.partner', $data);
 ```
 
-Updating records.
+Updating records:
 
 ```php
 // change email address of user with current email address foo@bar.com
@@ -157,7 +157,7 @@ $ids = $client->search('res.partner', [['customer', '=', true]], 0, 10);
 $client->write('res.partner', $ids, ['customer' => false]);
 ```
 
-Deleting records.
+Deleting records:
 
 ```php
 $ids = $client->search('res.partner', [['email', '=', 'baz@quuz.com']], 0, 1);
