@@ -64,7 +64,7 @@ trait CommonHandler
      *
      * @author Thomas Bondois
      */
-    public function testAuthenticate(bool $reset = false): bool
+    public function tryAuthenticate(bool $reset = false): bool
     {
         try {
             if ($this->uid($reset)) {
@@ -82,7 +82,7 @@ trait CommonHandler
      * @throws ResponseFaultException|ResponseStatusException
      * @author Thomas Bondois
      */
-    public function tryAuthenticate(bool $reset = false) : bool
+    public function testAuthenticate(bool $reset = false) : bool
     {
         return (bool)$this->uid($reset);
     }
