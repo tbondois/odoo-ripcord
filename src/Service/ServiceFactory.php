@@ -30,11 +30,8 @@ class ServiceFactory
      */
     public function create(string $endpoint, string $apiUrl, array $options = null, $transport = null)
     {
-        if (strpos($apiUrl, $endpoint) === false) {
-            $endpointUrl = $apiUrl.'/'.$endpoint;
-        } else {
-            $endpointUrl = $apiUrl;
-        }
+        $endpointUrl = $apiUrl.'/'.$endpoint;
+
         if (!isset($transport)) {
             $transport = new Stream();
         }
