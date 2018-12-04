@@ -2,8 +2,8 @@
 
 namespace Ripoo;
 
-use Ripoo\Exception\ResponseFaultException;
 use Ripoo\Exception\CodingException;
+use Ripoo\Exception\ResponseFaultException;
 use Ripoo\Exception\ResponseStatusException;
 use Ripoo\Handler\CommonHandler;
 use Ripoo\Handler\DbHandler;
@@ -172,7 +172,7 @@ class OdooClient
      *
      * @param mixed $response
      * @return mixed
-     * @throws ResponseFaultException
+     * @throws ResponseFaultException|ResponseStatusException
      * @author Thomas Bondois
      */
     public function formatResponse($response)
@@ -187,9 +187,21 @@ class OdooClient
         return $response;
     }
 
-    public static function trimSlash($string)
+    /**
+     * Useful to avoid bad URL-related input.
+     * @param $str
+     * @param null $extraChars
+     * @return string
+     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     */
+    public static function trimSlash($str, $extraChars = null)
     {
-        return trim($string, " \t\n\r\0\x0B/");
+        $charlist = " \t\n\r\0\x0B"; //default trim charlist
+        $charlist.= "/";
+        if (null !== $extraChars) {
+            $charlist.= $extraChars;
+        }
+        return trim($str, $charlist);
     }
 
 } // end class

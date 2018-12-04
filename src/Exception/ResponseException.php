@@ -2,11 +2,13 @@
 
 namespace Ripoo\Exception;
 
+
+use Throwable;
+
 /**
  * @author Thomas Bondois
  */
-interface RipooExceptionInterface
+class ResponseException extends RipooException
 {
-
 
 }

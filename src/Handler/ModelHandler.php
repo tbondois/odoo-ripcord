@@ -6,6 +6,7 @@ use Ripoo\Service\ModelService;
 use Ripoo\Exception\RipooExceptionInterface;
 use Ripoo\Exception\AuthException;
 use Ripoo\Exception\ResponseFaultException;
+use Ripoo\Exception\ResponseStatusException;
 
 /**
  * Handle related to Odoo Model/Object Service/Endpoint
@@ -67,7 +68,7 @@ trait ModelHandler
      * @param string $order
      * @return array Array of model id's
      * @throws AuthException
-     * @throws ResponseFaultException
+     * @throws ResponseFaultException|ResponseStatusException
      */
     public function search(string $model, array $criteria = [], $offset = 0, $limit = 100, $order = '')
     {
@@ -89,7 +90,7 @@ trait ModelHandler
      *
      * @return int
      * @throws AuthException
-     * @throws ResponseFaultException
+     * @throws ResponseFaultException|ResponseStatusException
      */
     public function search_count(string $model, array $criteria = [])
     {
@@ -110,7 +111,7 @@ trait ModelHandler
      * @param array $fields Index array of fields to fetch, an empty array fetches all fields
      *
      * @return array An array of models
-     * @throws ResponseFaultException
+     * @throws ResponseFaultException|ResponseStatusException
      */
     public function read(string $model, array $ids, array $fields = [])
     {
@@ -135,7 +136,7 @@ trait ModelHandler
      *
      * @return array An array of models
      * @throws AuthException
-     * @throws ResponseFaultException
+     * @throws ResponseFaultException|ResponseStatusException
      */
     public function search_read(string $model, array $criteria = [], array $fields = [], int $limit = 100, $order = '')
     {
@@ -162,7 +163,7 @@ trait ModelHandler
      *
      * @return mixed
      * @throws AuthException
-     * @throws ResponseFaultException
+     * @throws ResponseFaultException|ResponseStatusException
      *
      * @author Thomas Bondois
      */
@@ -186,7 +187,7 @@ trait ModelHandler
      *
      * @return int Created model id
      * @throws AuthException
-     * @throws ResponseFaultException
+     * @throws ResponseFaultException|ResponseStatusException
      */
     public function create(string $model, array $data)
     {
@@ -208,7 +209,7 @@ trait ModelHandler
      *
      * @return array
      * @throws AuthException
-     * @throws ResponseFaultException
+     * @throws ResponseFaultException|ResponseStatusException
      */
     public function write(string $model, array $ids, array $fields)
     {
@@ -232,7 +233,7 @@ trait ModelHandler
      *
      * @return boolean True is successful
      * @throws AuthException
-     * @throws ResponseFaultException
+     * @throws ResponseFaultException|ResponseStatusException
      */
     public function unlink(string $model, array $ids)
     {

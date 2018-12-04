@@ -5,6 +5,7 @@ namespace Ripoo\Handler;
 use Ripoo\Service\CommonService;
 use Ripoo\Exception\AuthException;
 use Ripoo\Exception\ResponseFaultException;
+use Ripoo\Exception\ResponseStatusException;
 
 /**
  * Handle methods related to Odoo Common Service/Endpoint
@@ -32,26 +33,27 @@ trait CommonHandler
      * @param bool $reset
      * @return int $uid
      * @throws AuthException
-     * @throws ResponseFaultException
+     * @throws AuthException|ResponseFaultException|ResponseStatusException
      */
-    private function uid(bool $reset = false): int
+    private function uid(bool $reset = false) : int
     {
-        if ($this->uid === null || $reset) {
+        if ($reset || null === $this->uid) {
+
             if (!$this->db || !$this->user || !$this->password) {
                 throw new AuthException("Authentication data missing");
             }
+
             $response = $this->getCommonService()->authenticate(
                 $this->db, $this->user, $this->password,
                 []
             );
 
-            if (!is_int($response)) {
-
-                $this->formatResponse($response);
-
-                throw new AuthException('Unsuccessful Authorization');
+            if (is_int($response)) {
+                $this->uid = $response;
+            } else {
+                $this->formatResponse($response); // can throw more detaild response error exception
+                throw new AuthException('Unsuccessful Authentication');
             }
-            $this->uid = $response;
         }
         return $this->uid;
     }
@@ -77,7 +79,7 @@ trait CommonHandler
      * Get version
      *
      * @return array
-     * @throws ResponseFaultException
+     * @throws ResponseFaultException|ResponseStatusException
      */
     public function version()
     {
