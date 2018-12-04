@@ -192,7 +192,7 @@ class OdooClient
      * @param $str
      * @param null $extraChars
      * @return string
-     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     * @author Thomas Bondois
      */
     public static function trimSlash($str, $extraChars = null)
     {

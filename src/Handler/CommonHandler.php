@@ -76,6 +76,18 @@ trait CommonHandler
     }
 
     /**
+     * @param bool $reset
+     * @return bool
+     * @throws AuthException
+     * @throws ResponseFaultException|ResponseStatusException
+     * @author Thomas Bondois
+     */
+    public function tryAuthenticate(bool $reset = false) : bool
+    {
+        return (bool)$this->uid($reset);
+    }
+
+    /**
      * Get version
      *
      * @return array
