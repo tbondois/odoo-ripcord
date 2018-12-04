@@ -30,9 +30,9 @@ class ServiceFactory
      */
     public function create(string $endpoint, string $apiUrl, array $options = null, $transport = null)
     {
-        $endpointUrl = $apiUrl.'/'.$endpoint;
+        $endpointUrl = OdooClient::trimSlash($apiUrl).'/'.OdooClient::trimSlash($endpoint);
 
-        if (!isset($transport)) {
+        if (!$transport) {
             $transport = new Stream();
         }
         switch ($endpoint) {

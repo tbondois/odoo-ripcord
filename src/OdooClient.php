@@ -187,7 +187,7 @@ class OdooClient
         return $response;
     }
 
-    private static function trimSlash($string)
+    public static function trimSlash($string)
     {
         return trim($string, " \t\n\r\0\x0B/");
     }
