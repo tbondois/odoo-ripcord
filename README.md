@@ -165,6 +165,17 @@ $ids = $client->search('res.partner', [['email', '=', 'baz@quuz.com']], 0, 1);
 $client->unlink('res.partner', $ids);
 ```
 
+# How to get list of models
+
+- Model `ir.models` will return a list of reachable models.
+- You can also use `erppeek` :
+```bash
+sudo pip install -U erppeek
+erppeek  --server=http://odoo.example.com -d your_db -u admin -p password
+your_db >>> models()
+```
+
+
 [1]: https://www.odoo.com/
 [2]: https://github.com/robroypt/odoo-client
 [5]: https://github.com/DarkaOnLine/Ripcord

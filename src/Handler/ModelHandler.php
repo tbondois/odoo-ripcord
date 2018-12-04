@@ -19,8 +19,6 @@ trait ModelHandler
      * odoo.service.model.dispatch
      *
      * @return ModelService
-     *
-     * @author Thomas Bondois
      */
     public function getModelService() : ModelService
     {
@@ -71,7 +69,7 @@ trait ModelHandler
      * @throws AuthException
      * @throws ResponseFaultException
      */
-    public function search(string $model, array $criteria, $offset = 0, $limit = 100, $order = '')
+    public function search(string $model, array $criteria = [], $offset = 0, $limit = 100, $order = '')
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -93,7 +91,7 @@ trait ModelHandler
      * @throws AuthException
      * @throws ResponseFaultException
      */
-    public function search_count(string $model, array $criteria)
+    public function search_count(string $model, array $criteria = [])
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -139,7 +137,7 @@ trait ModelHandler
      * @throws AuthException
      * @throws ResponseFaultException
      */
-    public function search_read(string $model, array $criteria, array $fields = [], int $limit = 100, $order = '')
+    public function search_read(string $model, array $criteria = [], array $fields = [], int $limit = 100, $order = '')
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -190,7 +188,7 @@ trait ModelHandler
      * @throws AuthException
      * @throws ResponseFaultException
      */
-    public function create(string $model, $data)
+    public function create(string $model, array $data)
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -212,7 +210,7 @@ trait ModelHandler
      * @throws AuthException
      * @throws ResponseFaultException
      */
-    public function write(string $model, $ids, $fields)
+    public function write(string $model, array $ids, array $fields)
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -236,7 +234,7 @@ trait ModelHandler
      * @throws AuthException
      * @throws ResponseFaultException
      */
-    public function unlink(string $model, $ids)
+    public function unlink(string $model, array $ids)
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,

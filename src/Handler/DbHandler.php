@@ -36,7 +36,8 @@ trait DbHandler
      */
     public function db_exist($db_name): bool
     {
-        return (bool)$this->getDbService()->db_exist($db_name);
+        $response = $this->getDbService()->db_exist($db_name);
+        return (bool)$this->formatResponse($response);
     }
 
 }

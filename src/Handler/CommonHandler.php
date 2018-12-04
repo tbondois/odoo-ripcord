@@ -20,8 +20,6 @@ trait CommonHandler
      * if we use getCommonService()->version, and no fault if we we getRipcordClient('commmon')->version()
      *
      * @return CommonService
-     *
-     * @author Thomas Bondois
      */
     public function getCommonService() : CommonService
     {
