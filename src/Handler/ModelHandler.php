@@ -22,7 +22,7 @@ trait ModelHandler
      *
      * @author Thomas Bondois
      */
-    public function getModelService()
+    public function getModelService() : ModelService
     {
         return $this->getRipcordClient(self::ENDPOINT_MODEL);
     }

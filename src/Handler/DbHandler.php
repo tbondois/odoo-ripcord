@@ -16,7 +16,7 @@ trait DbHandler
      *
      * @return DbService
      */
-    public function getDbService()
+    public function getDbService() : DbService
     {
         return $this->getRipcordClient(self::ENDPOINT_DB);
     }

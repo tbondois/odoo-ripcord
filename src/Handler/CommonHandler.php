@@ -23,7 +23,7 @@ trait CommonHandler
      *
      * @author Thomas Bondois
      */
-    public function getCommonService()
+    public function getCommonService() : CommonService
     {
         return $this->getRipcordClient(self::ENDPOINT_COMMON);
     }
@@ -42,8 +42,7 @@ trait CommonHandler
             if (!$this->db || !$this->user || !$this->password) {
                 throw new AuthException("Authentication data missing");
             }
-            $common = $this->getCommonService();
-            $response = $common->authenticate(
+            $response = $this->getCommonService()->authenticate(
                 $this->db, $this->user, $this->password,
                 []
             );
