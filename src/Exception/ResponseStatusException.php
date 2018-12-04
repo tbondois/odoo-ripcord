@@ -9,7 +9,7 @@ namespace Ripoo\Exception;
 class ResponseStatusException extends RipooException
 {
     /**
-     * @var int
+     * @var bool
      */
     protected $status;
 
@@ -18,10 +18,9 @@ class ResponseStatusException extends RipooException
      */
     protected $statusMessage;
 
-
     /**
      * @param string $statusMessage
-     * @param bool $status
+     * @param ?bool $status
      * @param \Throwable|null $previous
      */
     public function __construct(string $statusMessage = "", $status = null, \Throwable $previous = null)
@@ -65,8 +64,5 @@ class ResponseStatusException extends RipooException
     {
         $this->statusMessage = $statusMessage;
     }
-
-
-
 
 }

@@ -19,7 +19,7 @@ class ResponseFaultException extends RipooException
 
     /**
      * @param string $faultString
-     * @param int $faultCode
+     * @param ?int $faultCode
      * @param \Throwable|null $previous
      */
     public function __construct(string $faultString = "", $faultCode = null, \Throwable $previous = null)
@@ -55,6 +55,5 @@ class ResponseFaultException extends RipooException
     {
         $this->faultString = $faultString;
     }
-
 
 }
