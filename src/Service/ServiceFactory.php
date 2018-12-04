@@ -23,10 +23,10 @@ class ServiceFactory
      * @param array|null $options
      * @param null $transport
      *
-     * @return RipcordClient|CommonService|DbService|\Ripoo\Service\ModelService
+     * @return RipcordClient|CommonService|DbService|ModelService
      * @throws \Ripcord\Exceptions\ConfigurationException
      *
-     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     * @author Thomas Bondois
      */
     public function create(string $endpoint, string $apiUrl, array $options = null, $transport = null)
     {

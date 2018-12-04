@@ -100,10 +100,10 @@ class OdooClient
     public function __construct(string $baseUrl, $db = null, $user = null, $password = null, $apiPath = null)
     {
         // use customer or default API :
-        $apiPath = trim($apiPath ?? self::DEFAULT_API, ' /');
+        $apiPath   = self::trimSlash($apiPath ?? self::DEFAULT_API);
 
         // clean host if it have a final slash :
-        $baseUrl    = trim($baseUrl, ' /');
+        $baseUrl    = self::trimSlash($baseUrl);
 
         $this->url       = $baseUrl.'/'.$apiPath;
         $this->db        = $db;
@@ -136,7 +136,7 @@ class OdooClient
     }
 
     /**
-     * Get XmlRpc Client
+     * Get XmlRpc Client, manage cache
      *
      * This method returns an XmlRpc Client for the requested endpoint.
      * If no endpoint is specified or if a client for the requested endpoint is
@@ -146,9 +146,9 @@ class OdooClient
      * @return RipcordClient
      * @throws \Ripcord\Exceptions\ConfigurationException
      */
-    public function getRipcordClient(string $endpoint) : RipcordClient
+    public function getService(string $endpoint)
     {
-        $endpoint = trim($endpoint, ' /');
+        $endpoint = self::trimSlash($endpoint);
         if (!empty($this->services[$endpoint])) {
             return $this->services[$endpoint];
         }
@@ -185,6 +185,11 @@ class OdooClient
             }
         }
         return $response;
+    }
+
+    private static function trimSlash($string)
+    {
+        return trim($string, " \t\n\r\0\x0B/");
     }
 
 } // end class

@@ -22,7 +22,7 @@ trait ModelHandler
      */
     public function getModelService() : ModelService
     {
-        return $this->getRipcordClient(self::ENDPOINT_MODEL);
+        return $this->getService(self::ENDPOINT_MODEL);
     }
 
     /**

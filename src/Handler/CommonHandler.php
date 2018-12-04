@@ -17,13 +17,13 @@ trait CommonHandler
      * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/common.py
      *
      * TODO understand why odoo return fault (UnboundLocalError: local variable 'dispatch' referenced before assignment),
-     * if we use getCommonService()->version, and no fault if we we getRipcordClient('commmon')->version()
+     * if we use getCommonService()->version, and no fault if we we getService('commmon')->version()
      *
      * @return CommonService
      */
     public function getCommonService() : CommonService
     {
-        return $this->getRipcordClient(self::ENDPOINT_COMMON);
+        return $this->getService(self::ENDPOINT_COMMON);
     }
 
     /**
