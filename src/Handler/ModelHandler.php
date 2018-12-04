@@ -3,7 +3,6 @@
 namespace Ripoo\Handler;
 
 use Ripoo\Service\ModelService;
-use Ripoo\Service\ModelServiceInterface;
 use Ripoo\Exception\RipooExceptionInterface;
 use Ripoo\Exception\AuthException;
 use Ripoo\Exception\ResponseFaultException;

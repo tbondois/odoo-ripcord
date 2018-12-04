@@ -3,7 +3,6 @@
 namespace Ripoo\Handler;
 
 use Ripoo\Service\DbService;
-use Ripoo\Service\DbServiceInterface;
 
 /**
  * Handle methods related to Odoo Db Service/Endpoint
