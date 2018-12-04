@@ -247,4 +247,4 @@ trait ModelHandler
         return $this->formatResponse($response);
     }
 
-} // end class
+}

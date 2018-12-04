@@ -39,4 +39,4 @@ trait DbHandler
         return (bool)$this->getDbService()->db_exist($db_name);
     }
 
-} // end class
+}

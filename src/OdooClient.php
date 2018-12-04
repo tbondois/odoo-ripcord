@@ -85,7 +85,10 @@ class OdooClient
      */
     private $services = [];
 
-    protected $serviceFactory;
+    /**
+     * @var ServiceFactory
+     */
+    private $serviceFactory;
 
     /**
      * @param string $baseUrl The Odoo root url. Must contain the protocol like https://, can also :port or /sub/dir
@@ -96,20 +99,20 @@ class OdooClient
      */
     public function __construct(string $baseUrl, $db = null, $user = null, $password = null, $apiPath = null)
     {
-        $this->serviceFactory = new ServiceFactory();
-
         // use customer or default API :
         $apiPath = trim($apiPath ?? self::DEFAULT_API, ' /');
 
         // clean host if it have a final slash :
         $baseUrl    = trim($baseUrl, ' /');
 
-        $this->url       = $baseUrl . '/' . $apiPath;
+        $this->url       = $baseUrl.'/'.$apiPath;
         $this->db        = $db;
         $this->user      = $user;
         $this->password  = $password;
         $this->createdAt = microtime(true);
         $this->pid       = '#'.$apiPath.'-'.microtime(true)."-".mt_rand(10000, 99000);
+
+        $this->serviceFactory = new ServiceFactory();
     }
 
     /**
@@ -145,7 +148,7 @@ class OdooClient
      */
     public function getRipcordClient(string $endpoint) : RipcordClient
     {
-        $endpoint = trim($endpoint, " /");
+        $endpoint = trim($endpoint, ' /');
         if (!empty($this->services[$endpoint])) {
             return $this->services[$endpoint];
         }

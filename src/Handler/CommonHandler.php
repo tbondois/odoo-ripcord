@@ -42,7 +42,7 @@ trait CommonHandler
             if (!$this->db || !$this->user || !$this->password) {
                 throw new AuthException("Authentication data missing");
             }
-            $common = $this->getRipcordClient(self::ENDPOINT_COMMON);
+            $common = $this->getCommonService();
             $response = $common->authenticate(
                 $this->db, $this->user, $this->password,
                 []
@@ -84,9 +84,9 @@ trait CommonHandler
      */
     public function version()
     {
-        $response = $this->getRipcordClient(self::ENDPOINT_COMMON)->version();
+        $response = $this->getCommonService()->version();
         //$response = $this->getCommonService()->version(); // TODO understand why crash Odoo
         return $this->formatResponse($response);
     }
 
-} // end class
+}

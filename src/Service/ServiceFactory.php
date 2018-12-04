@@ -38,13 +38,10 @@ class ServiceFactory
         switch ($endpoint) {
             case OdooClient::ENDPOINT_COMMON;
                 return new CommonService($endpointUrl, $options, $transport);
-                break;
             case OdooClient::ENDPOINT_DB;
                 return new DbService($endpointUrl, $options, $transport);
-                break;
             case OdooClient::ENDPOINT_MODEL;
                 return new ModelService($endpointUrl, $options, $transport);
-                break;
             default:
                 return new RipcordClient($endpointUrl, $options,$transport);
         }
