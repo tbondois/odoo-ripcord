@@ -21,7 +21,7 @@ composer require tbondois/odoo-ripcord
 
 ```php
 use Ripoo\ClientHandler;
-........
+
 $host = 'example.odoo.com:8080';
 $db = 'example-database';
 $user = 'user@email.com';
@@ -38,7 +38,7 @@ class OdooManager
 {
     private $clientFactory;
     private $client;
-    ...
+    private $scopeConfig;
     
     function __construct(
         \Ripoo\ClientHandlerFactory $clientFactory,

@@ -16,6 +16,7 @@
         }
     },
     "license": "MIT",
+    "readme": "README.md",
     "homepage": "https://packagist.org/packages/tbondois/odoo-ripcord",
     "authors": [
         {
