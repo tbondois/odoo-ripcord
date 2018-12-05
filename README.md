@@ -171,8 +171,8 @@ $ids = $client->search('res.partner', [['email', '=', 'baz@quuz.com']], 0, 1);
 $client->unlink('res.partner', $ids);
 ```
 
-How to get list of models
------------------------
+How to know the model names
+---------------------------
 
 - Model `ir.models` will return a list of reachable models.
 - You can also use `erppeek` :
@@ -188,5 +188,6 @@ your_db >>> models()
 [5]: https://github.com/DarkaOnLine/Ripcord
 [6]: https://www.odoo.com/documentation/11.0/api_integration.html
 
-# License
-MIT License. Copyright (c) 2018 Thomas Bondois.
+License
+-----------------------
+MIT License. Copyright (c) 2018 Thomas Bondois. [See LICENSE file](LICENSE).
