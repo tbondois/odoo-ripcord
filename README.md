@@ -20,14 +20,14 @@ composer require tbondois/odoo-ripcord
 - Instantiate a new client via instance itself :
 
 ```php
-use Ripoo\OdooClient;
+use Ripoo\ClientHandler;
 ........
 $host = 'example.odoo.com:8080';
 $db = 'example-database';
 $user = 'user@email.com';
 $password = 'yourpassword';
 
-$client = new OdooClient($host, $db, $user, $password);
+$client = new ClientHandler($host, $db, $user, $password);
 ```
 - Or you can instanciate new client via ClientFactory, to centralize configuration use good Design Patterns . 
 
@@ -39,14 +39,14 @@ class OdooManager
     ...
     
     function __construct(
-        \Ripoo\OdooClientFactory $clientFactory,
+        \Ripoo\ClientHandlerFactory $clientFactory,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         $this->clientFactory = $clientFactory;
         $this->scopeConfig   = $scopeConfig;
     }
 
-    public function createClient() : \Ripoo\OdooClient
+    public function createClient() : \Ripoo\ClientHandler
     {
         // TODO secure injections
         $odooUrl  = $this->scopeConfig->getValue('my/settings/odoo_url');
@@ -54,7 +54,7 @@ class OdooManager
         $odooUser = $this->scopeConfig->getValue('my/settings/odoo_user');
         $odooPwd  = $this->scopeConfig->getValue('my/settings/odoo_pwd');
 
-        $this->client = $this->clientFactory->create(
+        $this->client = $this->clientHandlerFactory->create(
             $host,
             $odooDb,
             $odooUser,
@@ -63,7 +63,7 @@ class OdooManager
         return $this->client;
     }
     
-    public function getClient() : Client
+    public function getClient() : ClientHandler
     {
         // You can force nenewing a Client based on createdAt
         if (!$this->client) {

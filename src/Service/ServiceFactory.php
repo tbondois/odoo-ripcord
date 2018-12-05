@@ -2,7 +2,7 @@
 
 namespace Ripoo\Service;
 
-use Ripoo\OdooClient;
+use Ripoo\ClientHandler;
 use Ripcord\Client\Client as RipcordClient;
 use Ripcord\Client\Transport\Stream;
 
@@ -30,17 +30,17 @@ class ServiceFactory
      */
     public function create(string $endpoint, string $apiUrl, array $options = null, $transport = null) : RipcordClient
     {
-        $endpointUrl = OdooClient::trimSlash($apiUrl).'/'.OdooClient::trimSlash($endpoint);
+        $endpointUrl = ClientHandler::trimSlash($apiUrl).'/'.ClientHandler::trimSlash($endpoint);
 
         if (!$transport) {
             $transport = new Stream();
         }
         switch ($endpoint) {
-            case OdooClient::ENDPOINT_COMMON;
+            case ClientHandler::ENDPOINT_COMMON;
                 return new CommonService($endpointUrl, $options, $transport);
-            case OdooClient::ENDPOINT_DB;
+            case ClientHandler::ENDPOINT_DB;
                 return new DbService($endpointUrl, $options, $transport);
-            case OdooClient::ENDPOINT_MODEL;
+            case ClientHandler::ENDPOINT_MODEL;
                 return new ModelService($endpointUrl, $options, $transport);
             default:
                 return new RipcordClient($endpointUrl, $options,$transport);

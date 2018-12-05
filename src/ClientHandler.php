@@ -17,7 +17,7 @@ use Ripcord\Client\Client as RipcordClient;
  *
  * @author Thomas Bondois
  */
-class OdooClient
+class ClientHandler
 {
     use CommonHandlerTrait, DbHandlerTrait, ModelHandlerTrait;
 
