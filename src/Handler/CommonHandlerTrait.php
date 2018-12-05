@@ -38,7 +38,7 @@ trait CommonHandlerTrait
     {
         if ($reset || null === $this->uid) {
 
-            if (!$this->db || !$this->user || !$this->password) {
+            if (null === $this->db || null === $this->user || null === $this->password) {
                 throw new AuthException("Authentication data missing");
             }
 

@@ -27,7 +27,7 @@ class ClientHandlerFactory
     }
 
     /**
-     * More strict instance creator
+     * More strict instance parameters
      *
      * @param string $baseUrl
      * @param string $db
@@ -39,11 +39,11 @@ class ClientHandlerFactory
      */
     public function createAuthenticated(string $baseUrl, string $db , string $user, string $password, $apiPath  = null) : ClientHandler
     {
-        return new ClientHandler($baseUrl, $db, $user, $password, $apiPath);
+        return $this->create($baseUrl, $db, $user, $password, $apiPath);
     }
 
     /**
-     * Useful only for API method not requiring authentification, like version() and server_version()
+     * Useful only for API method not needing authentification, like 'common' and 'db' endpoints
      *
      * @param string $baseUrl
      * @param ?string $apiPath
@@ -51,7 +51,7 @@ class ClientHandlerFactory
      */
     public function createAnonymous($baseUrl, $apiPath = null) : ClientHandler
     {
-        return new ClientHandler($baseUrl, null, null, null, $apiPath);
+        return $this->create($baseUrl, null, null, null, $apiPath);
     }
 
 } // end class
