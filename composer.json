@@ -27,8 +27,8 @@
         "API",
         "RPC",
         "XML",
-        "XMLRPC",
-        "Symfony",
+        "xmlrpc",
+        "ripcord",
         "Magento2",
         "XML-RPC"
     ]
