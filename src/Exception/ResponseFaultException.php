@@ -3,12 +3,13 @@
 namespace Ripoo\Exception;
 
 /**
+ * When there is an error or fault declared in Odoo response
  * @author Thomas Bondois
  */
 class ResponseFaultException extends RipooException
 {
     /**
-     * @var int
+     * @var null|int
      */
     protected $faultCode;
 
@@ -19,17 +20,16 @@ class ResponseFaultException extends RipooException
 
     /**
      * @param string $faultString
-     * @param ?int $faultCode
+     * @param null|int $faultCode
      * @param \Throwable|null $previous
      */
     public function __construct(string $faultString = "", $faultCode = null, \Throwable $previous = null)
     {
-        $nCode             = (int)$faultCode;
         $this->faultCode   = $faultCode;
         $this->faultString = $faultString;
-
-        $message = sprintf("Fault(%s) '%s'", $nCode, $this->faultString);
-        parent::__construct($message, $nCode, $previous);
+        $exceptionCode     = (int)$faultCode;
+        $exceptionMessage  = sprintf("Fault(%s) '%s'", $exceptionCode, $this->faultString);
+        parent::__construct($exceptionMessage, $exceptionCode, $previous);
     }
 
     /**

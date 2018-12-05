@@ -12,15 +12,6 @@ namespace Ripoo;
  */
 class ClientHandlerFactory
 {
-    /**
-     * @param string $baseUrl
-     * @param ?string $db
-     * @param ?string $user
-     * @param ?string $password
-     * @param ?string $apiPath
-     *
-     * @return ClientHandler
-     */
     public function create(string $baseUrl, $db = null, $user = null, $password = null, $apiPath  = null) : ClientHandler
     {
         return new ClientHandler($baseUrl, $db, $user, $password, $apiPath);
@@ -33,7 +24,7 @@ class ClientHandlerFactory
      * @param string $db
      * @param string $user
      * @param string $password
-     * @param ?string $apiType
+     * @param null|string $apiPath
      *
      * @return ClientHandler
      */
@@ -46,7 +37,7 @@ class ClientHandlerFactory
      * Useful only for API method not needing authentification, like 'common' and 'db' endpoints
      *
      * @param string $baseUrl
-     * @param ?string $apiPath
+     * @param null|string $apiPath
      * @return ClientHandler
      */
     public function createAnonymous($baseUrl, $apiPath = null) : ClientHandler

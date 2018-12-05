@@ -5,7 +5,6 @@ namespace Ripoo\Handler;
 use Ripoo\Service\CommonService;
 use Ripoo\Exception\AuthException;
 use Ripoo\Exception\ResponseFaultException;
-use Ripoo\Exception\ResponseStatusException;
 
 /**
  * Handle methods related to Odoo Common Service/Endpoint
@@ -32,7 +31,7 @@ trait CommonHandlerTrait
      *
      * @param bool $reset
      * @return int $uid
-     * @throws AuthException|ResponseFaultException|ResponseStatusException
+     * @throws AuthException|ResponseFaultException
      */
     private function uid(bool $reset = false) : int
     {
@@ -50,7 +49,7 @@ trait CommonHandlerTrait
             if (is_int($response)) {
                 $this->uid = $response;
             } else {
-                $this->formatResponse($response); // can throw more detaild response error exception
+                $this->checkResponse($response); // can throw more detaild response error exception
                 throw new AuthException('Unsuccessful Authentication');
             }
         }
@@ -60,8 +59,6 @@ trait CommonHandlerTrait
     /**
      * @param bool $reset
      * @return bool
-     *
-     * @author Thomas Bondois
      */
     public function tryAuthenticate(bool $reset = false): bool
     {
@@ -77,10 +74,7 @@ trait CommonHandlerTrait
     /**
      * @param bool $reset
      * @return bool
-     * @throws AuthException
-     * @throws AuthException|ResponseFaultException|ResponseStatusException
-     *
-     * @author Thomas Bondois
+     * @throws AuthException|ResponseFaultException
      */
     public function testAuthenticate(bool $reset = false) : bool
     {
@@ -91,13 +85,13 @@ trait CommonHandlerTrait
      * Get version
      *
      * @return array
-     * @throws ResponseFaultException|ResponseStatusException
+     * @throws ResponseException|ResponseFaultException
      */
     public function version()
     {
         $response = $this->getCommonService()->version();
         //$response = $this->getCommonService()->version(); // TODO understand why crash Odoo
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
 }

@@ -15,6 +15,13 @@ use Ripcord\Client\Client as RipcordClient;
  */
 class CommonService extends RipcordClient
 {
-
+    /**
+     * Display last response XML content
+     * @return string
+     */
+    function getLastResponse()
+    {
+        return $this->_response;
+    }
 
 } // end class

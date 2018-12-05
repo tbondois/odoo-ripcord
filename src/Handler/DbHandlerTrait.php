@@ -3,9 +3,7 @@
 namespace Ripoo\Handler;
 
 use Ripoo\Service\DbService;
-
 use Ripoo\Exception\ResponseFaultException;
-use Ripoo\Exception\ResponseStatusException;
 
 /**
  * Handle methods related to Odoo Db Service/Endpoint
@@ -30,50 +28,52 @@ trait DbHandlerTrait
     public function server_version()
     {
         $response = $this->getDbService()->server_version();
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
+     * If PostgreSQL database exists
      * @param $db_name
      * @return bool
-     * @throws ResponseFaultException|ResponseStatusException
+     * @throws ResponseException
      */
     public function db_exist($db_name)
     {
         $response = $this->getDbService()->db_exist($db_name);
-        return (bool)$this->formatResponse($response);
+        return (bool)$this->checkResponse($response);
     }
 
 
     /**
+     * Get PostgreSQL databases from config
      * @param bool $document
      * @return array
-     * @throws ResponseFaultException|ResponseStatusException
+     * @throws ResponseException
      */
-    public function list($document = false): array
+    public function list_dbs($document = false): array
     {
         $response = $this->getDbService()->list($document);
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
      * @return array
-     * @throws ResponseFaultException|ResponseStatusException
+     * @throws ResponseException
      */
     public function list_lang(): array
     {
         $response = $this->getDbService()->list_lang();
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
      * @return array
-     * @throws ResponseFaultException|ResponseStatusException
+     * @throws ResponseException
      */
     public function list_countries(): array
     {
         $response = $this->getDbService()->list_countries();
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
 }

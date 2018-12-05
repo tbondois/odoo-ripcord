@@ -3,6 +3,7 @@
 namespace Ripoo\Exception;
 
 /**
+ * Base Exception for all library exceptions
  * @author Thomas Bondois
  */
 class RipooException extends \Exception

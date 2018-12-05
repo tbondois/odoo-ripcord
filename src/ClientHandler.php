@@ -3,6 +3,7 @@
 namespace Ripoo;
 
 use Ripoo\Exception\CodingException;
+use Ripoo\Exception\ResponseException;
 use Ripoo\Exception\ResponseFaultException;
 use Ripoo\Exception\ResponseStatusException;
 use Ripoo\Handler\CommonHandlerTrait;
@@ -75,7 +76,7 @@ class ClientHandler
     private $pid;
 
     /**
-     * @var ?string
+     * @var null|string
      */
     private $currentEndpoint = null;
 
@@ -92,10 +93,10 @@ class ClientHandler
 
     /**
      * @param string $baseUrl The Odoo root url. Must contain the protocol like https://, can also :port or /sub/dir
-     * @param ?string $db PostgreSQL database of Odoo containing Odoo tables
-     * @param ?string $user The username (Odoo 11 : is email)
-     * @param ?string $password Password of the user
-     * @param ?string $apiPath if not using xmlrpc/2
+     * @param null|string $db PostgreSQL database of Odoo containing Odoo tables
+     * @param null|string $user The username (Odoo 11 : is email)
+     * @param null|string $password Password of the user
+     * @param null|string $apiPath if not using xmlrpc/2
      */
     public function __construct(string $baseUrl, $db = null, $user = null, $password = null, $apiPath = null)
     {
@@ -151,7 +152,7 @@ class ClientHandler
      * already initialized, the last used client will be returned.
      *
      * @param string $endpoint The api endpoint
-     * @return RipcordClient
+     * @return RipcordClient or child service
      * @throws \Ripcord\Exceptions\ConfigurationException
      */
     public function getService(string $endpoint) : RipcordClient
@@ -167,9 +168,8 @@ class ClientHandler
     }
 
     /**
-     * @return RipcordClient
+     * @return RipcordClient or child service
      * @throws CodingException
-     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
      */
     public function getCurrentService() : RipcordClient
     {
@@ -185,16 +185,21 @@ class ClientHandler
      *
      * @param mixed $response
      * @return mixed
-     * @throws ResponseFaultException|ResponseStatusException
+     * @throws ResponseException|ResponseFaultException|ResponseStatusException
      * @author Thomas Bondois
      */
-    public function formatResponse($response)
+    public function checkResponse($response)
     {
         if (is_array($response)) {
             if (isset($response['faultCode'])) {
                 $faultCode = $response['faultCode'];
                 $faultString = $response['faultString'] ?? '';
                 throw new ResponseFaultException($faultString, $faultCode);
+            }
+            if (isset($response['status'])) {
+                $status = $response['status'];
+                $statusMessage = $response['status_message'] ?? $response['statusMessage'] ?? '';
+                throw new ResponseStatusException($statusMessage, $status);
             }
         }
         return $response;

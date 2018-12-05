@@ -32,6 +32,7 @@ trait ModelHandlerTrait
      * @param array $args indexed-array (Pythonic List) containing, for each numeric index, scalar or indexed-array
      * @param array|null $kwargs associative-array  (Pythonic Dictionary) containing, for each keyword, scalar or indexed-array
      * @return mixed
+     *
      * @author Thomas Bondois
      */
     public function model_execute_kw(string $model, string $method, array $args = [], array $kwargs = null)
@@ -43,14 +44,16 @@ trait ModelHandlerTrait
             $args,
             $kwargs
         );
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
      * @param string $model
      * @param string $method
-     * @param mixed ...$args
+     * @param mixed ...$args "splat" argument (php >=5.6)
      * @return mixed
+     * @throws AuthException|ResponseException
+     *
      * @author Thomas Bondois
      */
     public function model_execute(string $model, string $method, ...$args)
@@ -61,7 +64,7 @@ trait ModelHandlerTrait
             $method,
             $args
         );
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
@@ -70,7 +73,9 @@ trait ModelHandlerTrait
      * @param string $model
      * @param string $permission see OPERATION_* constants
      * @param bool $withExceptions
+     *
      * @return bool
+     * @throws AuthException|ResponseException
      *
      * @author Thomas Bondois
      */
@@ -89,7 +94,7 @@ trait ModelHandlerTrait
             );
 
             //TODO analyse result fault etc
-            return (bool)$this->formatResponse($response);
+            return (bool)$this->checkResponse($response);
 
         } catch (RipooExceptionInterface $exception) {
         }
@@ -104,8 +109,9 @@ trait ModelHandlerTrait
      * @param integer $offset Offset
      * @param integer $limit Max results
      * @param string $order
+     *
      * @return array Array of model id's
-     * @throws AuthException|ResponseFaultException|ResponseStatusException
+     * @throws AuthException|ResponseException
      */
     public function search(string $model, array $criteria = [], $offset = 0, $limit = 100, $order = '')
     {
@@ -116,7 +122,7 @@ trait ModelHandlerTrait
             [$criteria],
             ['offset' => $offset, 'limit' => $limit, 'order' => $order]
         );
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
@@ -126,7 +132,7 @@ trait ModelHandlerTrait
      * @param array $criteria Array of criteria
      *
      * @return int
-     * @throws AuthException|ResponseFaultException|ResponseStatusException
+     * @throws AuthException|ResponseException
      */
     public function search_count(string $model, array $criteria = [])
     {
@@ -136,18 +142,18 @@ trait ModelHandlerTrait
             'search_count',
             [$criteria]
         );
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
      * Read model(s)
      *
      * @param string $model Model
-     * @param array $ids Array of model id's
+     * @param array $ids Array of model (external) id's
      * @param array $fields Index array of fields to fetch, an empty array fetches all fields
      *
-     * @return array An array of models
-     * @throws AuthException|ResponseFaultException|ResponseStatusException
+     * @return array An array of model internal ids
+     * @throws AuthException|ResponseException
      */
     public function read(string $model, array $ids, array $fields = [])
     {
@@ -158,7 +164,7 @@ trait ModelHandlerTrait
             [$ids],
             ['fields' => $fields]
         );
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
@@ -171,9 +177,9 @@ trait ModelHandlerTrait
      * @param string $order
      *
      * @return array An array of models
-     * @throws AuthException|ResponseFaultException|ResponseStatusException
+     * @throws AuthException|ResponseException
      */
-    public function search_read(string $model, array $criteria = [], array $fields = [], int $limit = 100, $order = '')
+    public function search_read(string $model, array $criteria, array $fields = [], int $limit = 100, $order = '')
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -186,7 +192,7 @@ trait ModelHandlerTrait
                 'order'  => $order,
             ]
         );
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
@@ -197,7 +203,7 @@ trait ModelHandlerTrait
      * @param array $attributes
      *
      * @return mixed
-     * @throws AuthException|ResponseFaultException|ResponseStatusException
+     * @throws AuthException|ResponseException
      *
      * @author Thomas Bondois
      */
@@ -210,7 +216,7 @@ trait ModelHandlerTrait
             $fields,
             ['attributes' => $attributes]
         );
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
@@ -220,7 +226,7 @@ trait ModelHandlerTrait
      * @param array $data Array of fields with data (format: ['field' => 'value'])
      *
      * @return int Created model id
-     * @throws AuthException|ResponseFaultException|ResponseStatusException
+     * @throws AuthException|ResponseException
      */
     public function create(string $model, array $data)
     {
@@ -230,7 +236,7 @@ trait ModelHandlerTrait
             'create',
             [$data]
         );
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
@@ -255,7 +261,7 @@ trait ModelHandlerTrait
                 $fields,
             ]
         );
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
     /**
@@ -265,7 +271,7 @@ trait ModelHandlerTrait
      * @param array $ids Array of model id's
      *
      * @return boolean True is successful
-     * @throws AuthException|ResponseFaultException|ResponseStatusException
+     * @throws AuthException|ResponseException
      */
     public function unlink(string $model, array $ids)
     {
@@ -275,7 +281,7 @@ trait ModelHandlerTrait
             'unlink',
             [$ids]
         );
-        return $this->formatResponse($response);
+        return $this->checkResponse($response);
     }
 
 }

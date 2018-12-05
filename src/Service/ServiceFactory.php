@@ -25,8 +25,6 @@ class ServiceFactory
      *
      * @return RipcordClient|CommonService|DbService|ModelService
      * @throws \Ripcord\Exceptions\ConfigurationException
-     *
-     * @author Thomas Bondois
      */
     public function create(string $endpoint, string $apiUrl, array $options = null, $transport = null) : RipcordClient
     {

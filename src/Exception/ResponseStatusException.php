@@ -4,12 +4,13 @@ namespace Ripoo\Exception;
 
 
 /**
+ * When Odoo custom API methods declare a bad "status" & "status_message" in response
  * @author Thomas Bondois
  */
 class ResponseStatusException extends RipooException
 {
     /**
-     * @var bool
+     * @var bool|int|null
      */
     protected $status;
 
@@ -20,17 +21,16 @@ class ResponseStatusException extends RipooException
 
     /**
      * @param string $statusMessage
-     * @param ?bool $status
+     * @param null|bool $status
      * @param \Throwable|null $previous
      */
     public function __construct(string $statusMessage = "", $status = null, \Throwable $previous = null)
     {
-        $nCode               = (int)$status;
         $this->status        = $status;
         $this->statusMessage = $statusMessage;
-
-        $message = sprintf("Status(%s) '%s'", $nCode, $this->statusMessage);;
-        parent::__construct($message, $nCode, $previous);
+        $exceptionCode       = (int)$status;
+        $exceptionMessage    = sprintf("Status(%s) '%s'", $exceptionCode, $this->statusMessage);;
+        parent::__construct($exceptionMessage, $exceptionCode, $previous);
     }
 
     /** Getter for member status

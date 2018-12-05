@@ -36,6 +36,9 @@ Basic sample for Magento2 :
 ```php
 class OdooManager
 {
+
+    private $clientFactory;
+    private $client;
     ...
     
     function __construct(
@@ -63,7 +66,7 @@ class OdooManager
         return $this->client;
     }
     
-    public function getClient() : ClientHandler
+    public function getClient() : \Ripoo\ClientHandler
     {
         // You can force nenewing a Client based on createdAt
         if (!$this->client) {

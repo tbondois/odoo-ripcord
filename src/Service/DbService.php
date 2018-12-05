@@ -18,6 +18,13 @@ use Ripcord\Client\Client as RipcordClient;
  */
 class DbService extends RipcordClient
 {
-
+    /**
+     * Display last response XML content
+     * @return string
+     */
+    public function getRawResponse()
+    {
+        return $this->_response;
+    }
 
 } // end class
