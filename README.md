@@ -1,12 +1,12 @@
 # Ripoo (Ripcord Odoo)
 
-Ripoo is a PHP7 XML-RPC client for [Odoo][1]. 
+Ripoo is a PHP7 XML-RPC client handler for [Odoo][1]. 
 
-Fork of [robroypt/odoo-client][2], using [darkaonline/ripcord][5], the library used in the [Odoo Web Service API documentation for PHP][6].
+Fork of [robroypt/odoo-client][2], using [darkaonline/ripcord][5], the library used in example in the [Odoo External API documentation for PHP][6].
 
 ## Supported versions
 
-This library should work with all versions of Odoo, **at least between 8.0 and 11.0**. It can be used in all PHP frameworks, like Symfony, Laravel or Magento2.
+This library should work with all versions of Odoo, **at least between 8.0 and 11.0**, Community & Enterprise Editions. It can be used in all PHP frameworks, like Symfony, Laravel or Magento2.
 If you find any incompatibilities, please create an issue or submit a pull request.
 
 ## Installation
@@ -36,7 +36,6 @@ Basic sample for Magento2 :
 ```php
 class OdooManager
 {
-
     private $clientFactory;
     private $client;
     ...

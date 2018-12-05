@@ -1,6 +1,6 @@
 {
     "name": "tbondois/odoo-ripcord",
-    "description": "Ripoo : a PHP Client for Odoo using Ripcord XML-RPC library, as used in Odoo Web API docs",
+    "description": "Ripoo : a PHP7 XML-RPC client handler for Odoo External API",
     "type": "library",
     "minimum-stability": "stable",
     "require": {
@@ -19,7 +19,8 @@
     "homepage": "https://packagist.org/packages/tbondois/odoo-ripcord",
     "authors": [
         {
-            "name": "Thomas Bondois"
+            "name": "Thomas Bondois",
+            "homepage": "https://thomas.bondois.info"
         }
     ],
     "keywords": [
