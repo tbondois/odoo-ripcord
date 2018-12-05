@@ -54,7 +54,7 @@ class OdooManager
         $odooUser = $this->scopeConfig->getValue('my/settings/odoo_user');
         $odooPwd  = $this->scopeConfig->getValue('my/settings/odoo_pwd');
 
-        $this->client = $this->clientHandlerFactory->create(
+        $this->client = $this->clientFactory->create(
             $host,
             $odooDb,
             $odooUser,
