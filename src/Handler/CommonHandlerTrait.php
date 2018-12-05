@@ -11,7 +11,7 @@ use Ripoo\Exception\ResponseStatusException;
  * Handle methods related to Odoo Common Service/Endpoint
  * @author Thomas Bondois
  */
-trait CommonHandler
+trait CommonHandlerTrait
 {
     /**
      * odoo.service.common.dispatch
@@ -32,7 +32,6 @@ trait CommonHandler
      *
      * @param bool $reset
      * @return int $uid
-     * @throws AuthException
      * @throws AuthException|ResponseFaultException|ResponseStatusException
      */
     private function uid(bool $reset = false) : int
@@ -79,7 +78,8 @@ trait CommonHandler
      * @param bool $reset
      * @return bool
      * @throws AuthException
-     * @throws ResponseFaultException|ResponseStatusException
+     * @throws AuthException|ResponseFaultException|ResponseStatusException
+     *
      * @author Thomas Bondois
      */
     public function testAuthenticate(bool $reset = false) : bool

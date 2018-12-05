@@ -5,9 +5,9 @@ namespace Ripoo;
 use Ripoo\Exception\CodingException;
 use Ripoo\Exception\ResponseFaultException;
 use Ripoo\Exception\ResponseStatusException;
-use Ripoo\Handler\CommonHandler;
-use Ripoo\Handler\DbHandler;
-use Ripoo\Handler\ModelHandler;
+use Ripoo\Handler\CommonHandlerTrait;
+use Ripoo\Handler\DbHandlerTrait;
+use Ripoo\Handler\ModelHandlerTrait;
 use Ripoo\Service\ServiceFactory;
 use Ripcord\Client\Client as RipcordClient;
 
@@ -19,7 +19,7 @@ use Ripcord\Client\Client as RipcordClient;
  */
 class OdooClient
 {
-    use CommonHandler, DbHandler, ModelHandler;
+    use CommonHandlerTrait, DbHandlerTrait, ModelHandlerTrait;
 
     const DEFAULT_API       = 'xmlrpc/2';
 
@@ -33,10 +33,10 @@ class OdooClient
     const OPERATION_UNLINK  = 'unlink';
 
     /**
-     * Host to connect to
+     * Url with protocol and api path to connect to
      * @var string
      */
-    private $url;
+    private $apiUrl;
 
     /**
      * Unique identifier for current user
@@ -75,9 +75,9 @@ class OdooClient
     private $pid;
 
     /**
-     * @var string
+     * @var ?string
      */
-    private $currentService = null;
+    private $currentEndpoint = null;
 
     /**
      * For Cache purpose, associative array('endpoint' => Client)
@@ -105,7 +105,7 @@ class OdooClient
         // clean host if it have a final slash :
         $baseUrl    = self::trimSlash($baseUrl);
 
-        $this->url       = $baseUrl.'/'.$apiPath;
+        $this->apiUrl    = $baseUrl.'/'.$apiPath;
         $this->db        = $db;
         $this->user      = $user;
         $this->password  = $password;
@@ -113,6 +113,14 @@ class OdooClient
         $this->pid       = '#'.$apiPath.'-'.microtime(true)."-".mt_rand(10000, 99000);
 
         $this->serviceFactory = new ServiceFactory();
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getApiUrl()
+    {
+        return $this->apiUrl;
     }
 
     /**
@@ -146,24 +154,29 @@ class OdooClient
      * @return RipcordClient
      * @throws \Ripcord\Exceptions\ConfigurationException
      */
-    public function getService(string $endpoint)
+    public function getService(string $endpoint) : RipcordClient
     {
         $endpoint = self::trimSlash($endpoint);
         if (!empty($this->services[$endpoint])) {
             return $this->services[$endpoint];
         }
         //$this->services[$endpoint] = Ripcord::client($this->url.'/'.$endpoint);
-        $this->services[$endpoint] = $this->serviceFactory->create($endpoint, $this->url);
-        $this->currentService = $endpoint;
+        $this->services[$endpoint] = $this->serviceFactory->create($endpoint, $this->apiUrl);
+        $this->currentEndpoint = $endpoint;
         return $this->services[$endpoint];
     }
 
-    public function getCurrentRipcordClient() : RipcordClient
+    /**
+     * @return RipcordClient
+     * @throws CodingException
+     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     */
+    public function getCurrentService() : RipcordClient
     {
-        if (!$this->currentService || empty($this->services[$this->currentService])) {
+        if (!$this->currentEndpoint || empty($this->services[$this->currentEndpoint])) {
             throw new CodingException("Need to make a first call before getting the current client");
         }
-        return $this->services[$this->currentService];
+        return $this->services[$this->currentEndpoint];
     }
 
     /**

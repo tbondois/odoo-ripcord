@@ -29,7 +29,7 @@ class ResponseStatusException extends RipooException
         $this->status        = $status;
         $this->statusMessage = $statusMessage;
 
-        $message = sprintf("Status (%s) '%s'", $nCode, $this->statusMessage);;
+        $message = sprintf("Status(%s) '%s'", $nCode, $this->statusMessage);;
         parent::__construct($message, $nCode, $previous);
     }
 

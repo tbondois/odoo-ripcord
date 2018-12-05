@@ -28,7 +28,7 @@ class ResponseFaultException extends RipooException
         $this->faultCode   = $faultCode;
         $this->faultString = $faultString;
 
-        $message = sprintf("Fault (%s) '%s'", $nCode, $this->faultString);
+        $message = sprintf("Fault(%s) '%s'", $nCode, $this->faultString);
         parent::__construct($message, $nCode, $previous);
     }
 

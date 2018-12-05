@@ -28,7 +28,7 @@ class ServiceFactory
      *
      * @author Thomas Bondois
      */
-    public function create(string $endpoint, string $apiUrl, array $options = null, $transport = null)
+    public function create(string $endpoint, string $apiUrl, array $options = null, $transport = null) : RipcordClient
     {
         $endpointUrl = OdooClient::trimSlash($apiUrl).'/'.OdooClient::trimSlash($endpoint);
 

@@ -11,7 +11,7 @@ use Ripoo\Exception\ResponseStatusException;
  * Handle methods related to Odoo Db Service/Endpoint
  * @author Thomas Bondois
  */
-trait DbHandler
+trait DbHandlerTrait
 {
     /**
      * odoo.service.db.dispatch
@@ -36,11 +36,44 @@ trait DbHandler
     /**
      * @param $db_name
      * @return bool
+     * @throws ResponseFaultException|ResponseStatusException
      */
     public function db_exist($db_name)
     {
         $response = $this->getDbService()->db_exist($db_name);
         return (bool)$this->formatResponse($response);
+    }
+
+
+    /**
+     * @param bool $document
+     * @return array
+     * @throws ResponseFaultException|ResponseStatusException
+     */
+    public function list($document = false): array
+    {
+        $response = $this->getDbService()->list($document);
+        return $this->formatResponse($response);
+    }
+
+    /**
+     * @return array
+     * @throws ResponseFaultException|ResponseStatusException
+     */
+    public function list_lang(): array
+    {
+        $response = $this->getDbService()->list_lang();
+        return $this->formatResponse($response);
+    }
+
+    /**
+     * @return array
+     * @throws ResponseFaultException|ResponseStatusException
+     */
+    public function list_countries(): array
+    {
+        $response = $this->getDbService()->list_countries();
+        return $this->formatResponse($response);
     }
 
 }
