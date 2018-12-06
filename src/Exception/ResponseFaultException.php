@@ -6,7 +6,7 @@ namespace Ripoo\Exception;
  * When there is an error or fault declared in Odoo response
  * @author Thomas Bondois
  */
-class ResponseFaultException extends RipooException
+class ResponseFaultException extends ResponseException
 {
     /**
      * @var null|int

@@ -49,7 +49,7 @@ trait CommonHandlerTrait
             if (is_int($response)) {
                 $this->uid = $response;
             } else {
-                $this->checkResponse($response); // can throw more detaild response error exception
+                $this->setResponse($response); // can throw more detaild response error exception
                 throw new AuthException('Unsuccessful Authentication');
             }
         }
@@ -76,7 +76,7 @@ trait CommonHandlerTrait
      * @return bool
      * @throws AuthException|ResponseFaultException
      */
-    public function testAuthenticate(bool $reset = false) : bool
+    public function checkAuthenticate(bool $reset = false) : bool
     {
         return (bool)$this->uid($reset);
     }
@@ -91,7 +91,7 @@ trait CommonHandlerTrait
     {
         $response = $this->getCommonService()->version();
         //$response = $this->getCommonService()->version(); // TODO understand why crash Odoo
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
 }

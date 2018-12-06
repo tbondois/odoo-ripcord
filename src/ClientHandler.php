@@ -4,6 +4,7 @@ namespace Ripoo;
 
 use Ripoo\Exception\CodingException;
 use Ripoo\Exception\ResponseException;
+use Ripoo\Exception\ResponseEntryException;
 use Ripoo\Exception\ResponseFaultException;
 use Ripoo\Exception\ResponseStatusException;
 use Ripoo\Handler\CommonHandlerTrait;
@@ -90,6 +91,12 @@ class ClientHandler
      * @var ServiceFactory
      */
     private $serviceFactory;
+
+    /**
+     * Last response
+     * @var mixed scalar or array
+     */
+    public $response;
 
     /**
      * @param string $baseUrl The Odoo root url. Must contain the protocol like https://, can also :port or /sub/dir
@@ -184,7 +191,7 @@ class ClientHandler
      * @TODO check keys "status", "status_message" and raised exception "Error"
      *
      * @param mixed $response
-     * @return mixed
+     * @return bool
      * @throws ResponseFaultException|ResponseStatusException
      * @author Thomas Bondois
      */
@@ -202,7 +209,54 @@ class ClientHandler
                 throw new ResponseStatusException($statusMessage, $status);
             }
         }
-        return $response;
+        return true;
+    }
+
+    public function setResponse($response)
+    {
+        $this->response = null;
+
+        if ($this->checkResponse($response)) {
+            $this->response = $response;
+        }
+        return $this->response;
+    }
+
+    /**
+     * get last response
+     * @return mixed scalar or array
+     */
+    public function getResponse()
+    {
+        return $this->response;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isResponseSuccess()
+    {
+        try {
+            $success = $this->checkResponse($this->response);
+        } catch (ResponseException $e) {
+            $success = false;
+        }
+        return $success;
+    }
+
+    /**
+     * @param int|string $key
+     * @return null|mixed scalar or array
+     * @throws ResponseEntryException
+     */
+    public function getResponseEntry($key)
+    {
+        if (is_array($this->response) && isset($this->response[$key])) {
+            return $this->response[$key];
+        } else {
+            throw new ResponseEntryException(sprintf("entry '%s' not found in %s response", $key, gettype($this->response));
+        }
     }
 
     /**

@@ -7,7 +7,7 @@ namespace Ripoo\Exception;
  * When Odoo custom API methods declare a bad "status" & "status_message" in response
  * @author Thomas Bondois
  */
-class ResponseStatusException extends RipooException
+class ResponseStatusException extends ResponseException
 {
     /**
      * @var bool|int|null

@@ -29,8 +29,8 @@ trait ModelHandlerTrait
     /**
      * @param string $model
      * @param string $method
-     * @param array $args indexed-array (Pythonic List) containing, for each numeric index, scalar or indexed-array
-     * @param array|null $kwargs associative-array  (Pythonic Dictionary) containing, for each keyword, scalar or indexed-array
+     * @param array $args argument list, ordered. sequential-array (Python-List) containing, for each numeric index, scalar or array
+     * @param array|null $kwargs extra argument list, named. associative-array  (Python-Dictionary) containing, for each keyword, scalar or array
      * @return mixed
      *
      * @author Thomas Bondois
@@ -44,7 +44,7 @@ trait ModelHandlerTrait
             $args,
             $kwargs
         );
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
     /**
@@ -74,7 +74,7 @@ trait ModelHandlerTrait
             );
 
             //TODO analyse result fault etc
-            return (bool)$this->checkResponse($response);
+            return (bool)$this->setResponse($response);
 
         } catch (RipooExceptionInterface $exception) {
         }
@@ -102,7 +102,7 @@ trait ModelHandlerTrait
             [$criteria],
             ['offset' => $offset, 'limit' => $limit, 'order' => $order]
         );
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
     /**
@@ -122,7 +122,7 @@ trait ModelHandlerTrait
             'search_count',
             [$criteria]
         );
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
     /**
@@ -144,7 +144,7 @@ trait ModelHandlerTrait
             [$ids],
             ['fields' => $fields]
         );
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
     /**
@@ -172,7 +172,7 @@ trait ModelHandlerTrait
                 'order'  => $order,
             ]
         );
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
     /**
@@ -196,7 +196,7 @@ trait ModelHandlerTrait
             $fields,
             ['attributes' => $attributes]
         );
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
     /**
@@ -216,7 +216,7 @@ trait ModelHandlerTrait
             'create',
             [$data]
         );
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
     /**
@@ -241,7 +241,7 @@ trait ModelHandlerTrait
                 $fields,
             ]
         );
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
     /**
@@ -250,7 +250,7 @@ trait ModelHandlerTrait
      * @param string $model Model
      * @param array $ids Array of model id's
      *
-     * @return boolean True is successful
+     * @return boolean successful or not
      * @throws AuthException|ResponseException
      */
     public function unlink(string $model, array $ids)
@@ -261,8 +261,7 @@ trait ModelHandlerTrait
             'unlink',
             [$ids]
         );
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
-
 
 }

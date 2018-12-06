@@ -28,7 +28,7 @@ trait DbHandlerTrait
     public function server_version()
     {
         $response = $this->getDbService()->server_version();
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
     /**
@@ -40,7 +40,7 @@ trait DbHandlerTrait
     public function db_exist($db_name)
     {
         $response = $this->getDbService()->db_exist($db_name);
-        return (bool)$this->checkResponse($response);
+        return (bool)$this->setResponse($response);
     }
 
 
@@ -53,7 +53,7 @@ trait DbHandlerTrait
     public function list_dbs($document = false): array
     {
         $response = $this->getDbService()->list($document);
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
     /**
@@ -63,7 +63,7 @@ trait DbHandlerTrait
     public function list_lang(): array
     {
         $response = $this->getDbService()->list_lang();
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
     /**
@@ -73,7 +73,7 @@ trait DbHandlerTrait
     public function list_countries(): array
     {
         $response = $this->getDbService()->list_countries();
-        return $this->checkResponse($response);
+        return $this->setResponse($response);
     }
 
 }
