@@ -212,6 +212,11 @@ class ClientHandler
         return true;
     }
 
+    /**
+     * @param mixed $response scalar or array
+     * @return mixed|null response
+     * @throws ResponseFaultException|ResponseStatusException
+     */
     public function setResponse($response)
     {
         $this->response = null;
@@ -254,7 +259,7 @@ class ClientHandler
         if (is_array($this->response) && isset($this->response[$key])) {
             return $this->response[$key];
         } else {
-            throw new ResponseEntryException(sprintf("entry '%s' not found in %s response", $key, gettype($this->response));
+            throw new ResponseEntryException(sprintf("entry '%s' not found in %s response", $key, gettype($this->response)));
         }
     }
 
