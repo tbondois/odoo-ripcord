@@ -282,4 +282,29 @@ class ClientHandler
         return trim($str, $charlist);
     }
 
+
+    /**
+     * Determine if a PHP array can be considered as a Python {Dictionary} [List]/(Tuple), etc
+     * @param array $var
+     * @return string
+     * @author Thomas Bondois
+     */
+    public function getArrayType($var)
+    {
+        if (!is_array($var)) {
+            if (is_object($var) && $var instanceof \Traversable) {
+                return "object";
+            }
+            return "not";
+        }
+        $count = count($var);
+        if (!$count) {
+            return "empty";
+        }
+        if (array_keys($var) == range(0, $count - 1)) {
+            return "list|tuple";
+        }
+        return "dictionary";
+    }
+
 } // end class

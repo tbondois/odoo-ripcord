@@ -166,8 +166,7 @@ trait ModelHandlerTrait
             $model,
             'search_read',
             [$criteria],
-            [
-                'fields' => $fields,
+            [   'fields' => $fields,
                 'limit'  => $limit,
                 'order'  => $order,
             ]
@@ -236,8 +235,7 @@ trait ModelHandlerTrait
             $this->db, $this->uid(), $this->password,
             $model,
             'write',
-            [
-                $ids,
+            [   $ids,
                 $fields,
             ]
         );
