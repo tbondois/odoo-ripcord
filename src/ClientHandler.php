@@ -234,7 +234,7 @@ class ClientHandler
     /**
      * @return bool
      */
-    public function isResponseSuccess()
+    public function isResponseSuccess() : bool
     {
         try {
             $success = $this->checkResponse($this->response);
