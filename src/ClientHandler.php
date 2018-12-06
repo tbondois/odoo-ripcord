@@ -242,11 +242,13 @@ class ClientHandler
     public function isResponseSuccess() : bool
     {
         try {
-            $success = $this->checkResponse($this->response);
+            $response = $this->checkResponse($this->response);
+            if ('' !== $response && null !== $response) {
+                return true;
+            }
         } catch (ResponseException $e) {
-            $success = false;
         }
-        return (bool)$success;
+        return false;
     }
 
     /**
