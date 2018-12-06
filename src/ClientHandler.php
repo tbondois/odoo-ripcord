@@ -185,7 +185,7 @@ class ClientHandler
      *
      * @param mixed $response
      * @return mixed
-     * @throws ResponseException|ResponseFaultException|ResponseStatusException
+     * @throws ResponseFaultException|ResponseStatusException
      * @author Thomas Bondois
      */
     public function checkResponse($response)

@@ -9,7 +9,7 @@ use Ripcord\Client\Client as RipcordClient;
  * @see https://github.com/odoo/odoo/blob/11.0/odoo/service/model.py
  *
  * @method execute_kw(string $db, string $uid, string $password, string $model, string $method, array $args = [], array $kw = null)
- * @method execute(string $db, string $uid, string $password, string $model, string $method, ...$args)
+ * @method execute   (string $db, string $uid, string $password, string $model, string $method, array $args = [], array  $kw = [])
  *
  * @author Thomas Bondois
  */

@@ -48,26 +48,6 @@ trait ModelHandlerTrait
     }
 
     /**
-     * @param string $model
-     * @param string $method
-     * @param mixed ...$args "splat" argument (php >=5.6)
-     * @return mixed
-     * @throws AuthException|ResponseException
-     *
-     * @author Thomas Bondois
-     */
-    public function model_execute(string $model, string $method, ...$args)
-    {
-        $response = $this->getModelService()->execute(
-            $this->db, $this->uid(), $this->password,
-            $model,
-            $method,
-            $args
-        );
-        return $this->checkResponse($response);
-    }
-
-    /**
      * @see https://odoo-restapi.readthedocs.io/en/latest/calling_methods/check_access_rights.html
      *
      * @param string $model
@@ -283,5 +263,6 @@ trait ModelHandlerTrait
         );
         return $this->checkResponse($response);
     }
+
 
 }
