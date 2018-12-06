@@ -231,7 +231,6 @@ class ClientHandler
         return $this->response;
     }
 
-
     /**
      * @return bool
      */
@@ -242,7 +241,7 @@ class ClientHandler
         } catch (ResponseException $e) {
             $success = false;
         }
-        return $success;
+        return (bool)$success;
     }
 
     /**
