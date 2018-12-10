@@ -248,16 +248,25 @@ class OdooClient
     }
 
     /**
-     * @param mixed $key
+     * @param mixed ...$keys
      * @return mixed scalar or array
      * @throws ResponseEntryException
      */
-    public function getResponseEntry($key)
+    public function getResponseEntry(...$keys)
     {
-        if (is_array($this->response) && isset($this->response[$key])) {
-            return $this->response[$key];
+        if (is_array($this->response) && count($keys)) {
+            $entryValue = $this->response;
+            foreach ($keys as $key) {
+                d($entryValue, $key);
+                if (isset($entryValue[$key])) {
+                    $entryValue = $entryValue[$key];
+                } else {
+                    throw new ResponseEntryException(sprintf("entry '%s' not found in (%s) response", $key, gettype($this->response)));
+                }
+            }
+            return $entryValue;
         } else {
-            throw new ResponseEntryException(sprintf("entry '%s' not found in (%s) response", $key, gettype($this->response)));
+            throw new ResponseEntryException(sprintf("invalid response format (%s) or no input keys (%s)", gettype($this->response), count($keys)));
         }
     }
 

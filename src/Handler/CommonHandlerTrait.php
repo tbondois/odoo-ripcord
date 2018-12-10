@@ -84,7 +84,7 @@ trait CommonHandlerTrait
      * Get version
      *
      * @param null|string $entry see constants like CommonService::VERSION_ENTRY_SERVER
-     * @return array|string
+     * @return mixed
      * @throws ResponseException|ResponseFaultException|ResponseEntryException
      */
     public function version($entry = null)
