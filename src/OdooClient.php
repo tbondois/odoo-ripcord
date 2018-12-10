@@ -17,12 +17,18 @@ class OdooClient
 {
     use CommonHandlerTrait, DbHandlerTrait, ModelHandlerTrait;
 
-    const DEFAULT_API       = 'xmlrpc/2';
+    const DEFAULT_API           = 'xmlrpc/2';
 
-    const OPERATION_CREATE  = 'create';
-    const OPERATION_WRITE   = 'write';
-    const OPERATION_READ    = 'read';
-    const OPERATION_UNLINK  = 'unlink';
+    const OPERATION_CREATE      = 'create';
+    const OPERATION_WRITE       = 'write';
+    const OPERATION_READ        = 'read';
+    const OPERATION_UNLINK      = 'unlink';
+
+    const ARRAY_TYPE_NO_ARRAY   = "no";
+    const ARRAY_TYPE_EMPTY      = "empty";
+    const ARRAY_TYPE_OBJECT     = "object";
+    const ARRAY_TYPE_LIST       = "list";
+    const ARRAY_TYPE_DICTIONARY = "dict";
 
     /**
      * Url with protocol and api path to connect to
@@ -283,18 +289,18 @@ class OdooClient
     {
         if (!is_array($var)) {
             if (is_object($var) && $var instanceof \Traversable) {
-                return "object";
+                return self::ARRAY_TYPE_OBJECT; // Traversable object
             }
-            return "no";
+            return self::ARRAY_TYPE_NO_ARRAY; // Not an array
         }
         $count = count($var);
         if (!$count) {
-            return "empty";
+            return self::ARRAY_TYPE_EMPTY; // Empty, so we can define the Python type
         }
         if (array_keys($var) === range(0, $count-1)) {
-            return "list";
+            return self::ARRAY_TYPE_LIST; // python List or Tuple
         }
-        return "dict";
+        return self::ARRAY_TYPE_DICTIONARY; // python Dictionary
     }
 
 } // end class
