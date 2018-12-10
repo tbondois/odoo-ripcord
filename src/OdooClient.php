@@ -2,16 +2,10 @@
 
 namespace Ripoo;
 
-use Ripoo\Exception\CodingException;
-use Ripoo\Exception\ResponseException;
-use Ripoo\Exception\ResponseEntryException;
-use Ripoo\Exception\ResponseFaultException;
-use Ripoo\Exception\ResponseStatusException;
-use Ripoo\Handler\CommonHandlerTrait;
-use Ripoo\Handler\DbHandlerTrait;
-use Ripoo\Handler\ModelHandlerTrait;
-use Ripoo\Service\ServiceFactory;
 use Ripcord\Client\Client as RipcordClient;
+use Ripoo\Handler\{CommonHandlerTrait, DbHandlerTrait, ModelHandlerTrait};
+use Ripoo\Service\{CommonService, DbService, ModelService, ServiceFactory};
+use Ripoo\Exception\{CodingException, ResponseException, ResponseEntryException, ResponseFaultException, ResponseStatusException};
 
 /**
  * Uses Ripcord XML-RPC optimized for Odoo >=8.0
@@ -19,15 +13,11 @@ use Ripcord\Client\Client as RipcordClient;
  *
  * @author Thomas Bondois
  */
-class ClientHandler
+class OdooClient
 {
     use CommonHandlerTrait, DbHandlerTrait, ModelHandlerTrait;
 
     const DEFAULT_API       = 'xmlrpc/2';
-
-    const ENDPOINT_MODEL    = 'object';
-    const ENDPOINT_COMMON   = 'common';
-    const ENDPOINT_DB       = 'db';
 
     const OPERATION_CREATE  = 'create';
     const OPERATION_WRITE   = 'write';
@@ -159,10 +149,10 @@ class ClientHandler
      * already initialized, the last used client will be returned.
      *
      * @param string $endpoint The api endpoint
-     * @return RipcordClient or child service
+     * @return RipcordClient|CommonService|DbService|ModelService
      * @throws \Ripcord\Exceptions\ConfigurationException
      */
-    public function getService(string $endpoint) : RipcordClient
+    public function getService(string $endpoint) // : RipcordClient //only php7.2 manage child classes without warning
     {
         $endpoint = self::trimSlash($endpoint);
         if (!empty($this->services[$endpoint])) {
@@ -175,10 +165,10 @@ class ClientHandler
     }
 
     /**
-     * @return RipcordClient or child service
+     * @return RipcordClient|CommonService|DbService|ModelService
      * @throws CodingException
      */
-    public function getCurrentService() : RipcordClient
+    public function getCurrentService() // : RipcordClient //only php7.2 manage child classes without warning
     {
         if (!$this->currentEndpoint || empty($this->services[$this->currentEndpoint])) {
             throw new CodingException("Need to make a first call before getting the current client");
@@ -284,27 +274,27 @@ class ClientHandler
 
 
     /**
-     * Determine if a PHP array can be considered as a Python {Dictionary} [List]/(Tuple), etc
+     * Determine if a PHP array can be considered as sequential (numeric-ordered keys) like Python List/Tuple ou associative (like Python Dictionary), etc
      * @param array $var
      * @return string
      * @author Thomas Bondois
      */
-    public function getArrayType($var)
+    public function getArrayType($var) : string
     {
         if (!is_array($var)) {
             if (is_object($var) && $var instanceof \Traversable) {
                 return "object";
             }
-            return "not";
+            return "no";
         }
         $count = count($var);
         if (!$count) {
             return "empty";
         }
-        if (array_keys($var) == range(0, $count - 1)) {
-            return "list|tuple";
+        if (array_keys($var) === range(0, $count-1)) {
+            return "list";
         }
-        return "dictionary";
+        return "dict";
     }
 
 } // end class

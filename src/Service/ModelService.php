@@ -15,6 +15,8 @@ use Ripcord\Client\Client as RipcordClient;
  */
 class ModelService extends RipcordClient
 {
+    const ENDPOINT    = 'object';
+
     /**
      * Display last response XML content
      * @return string

@@ -10,11 +10,11 @@ namespace Ripoo;
  *
  * @author Thomas Bondois
  */
-class ClientHandlerFactory
+class OdooClientFactory
 {
-    public function create(string $baseUrl, $db = null, $user = null, $password = null, $apiPath  = null) : ClientHandler
+    public function create(string $baseUrl, $db = null, $user = null, $password = null, $apiPath  = null) : OdooClient
     {
-        return new ClientHandler($baseUrl, $db, $user, $password, $apiPath);
+        return new OdooClient($baseUrl, $db, $user, $password, $apiPath);
     }
 
     /**
@@ -26,9 +26,9 @@ class ClientHandlerFactory
      * @param string $password
      * @param null|string $apiPath
      *
-     * @return ClientHandler
+     * @return OdooClient
      */
-    public function createAuthenticated(string $baseUrl, string $db , string $user, string $password, $apiPath  = null) : ClientHandler
+    public function createAuthenticated(string $baseUrl, string $db , string $user, string $password, $apiPath  = null) : OdooClient
     {
         return $this->create($baseUrl, $db, $user, $password, $apiPath);
     }
@@ -38,9 +38,9 @@ class ClientHandlerFactory
      *
      * @param string $baseUrl
      * @param null|string $apiPath
-     * @return ClientHandler
+     * @return OdooClient
      */
-    public function createAnonymous($baseUrl, $apiPath = null) : ClientHandler
+    public function createAnonymous($baseUrl, $apiPath = null) : OdooClient
     {
         return $this->create($baseUrl, null, null, null, $apiPath);
     }

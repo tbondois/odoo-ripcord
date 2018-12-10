@@ -2,10 +2,10 @@
 
 namespace Ripoo\Service;
 
-use Ripoo\ClientHandler;
+use Ripoo\OdooClient;
 use Ripcord\Client\Client as RipcordClient;
 use Ripcord\Client\Transport\Stream;
-
+use Ripcord\Exceptions\ConfigurationException;
 
 /**
  * Factory for creating services
@@ -24,21 +24,21 @@ class ServiceFactory
      * @param null $transport
      *
      * @return RipcordClient|CommonService|DbService|ModelService
-     * @throws \Ripcord\Exceptions\ConfigurationException
+     * @throws ConfigurationException
      */
     public function create(string $endpoint, string $apiUrl, array $options = null, $transport = null) : RipcordClient
     {
-        $endpointUrl = ClientHandler::trimSlash($apiUrl).'/'.ClientHandler::trimSlash($endpoint);
+        $endpointUrl = OdooClient::trimSlash($apiUrl).'/'.OdooClient::trimSlash($endpoint);
 
         if (!$transport) {
             $transport = new Stream();
         }
         switch ($endpoint) {
-            case ClientHandler::ENDPOINT_COMMON;
+            case CommonService::ENDPOINT;
                 return new CommonService($endpointUrl, $options, $transport);
-            case ClientHandler::ENDPOINT_DB;
+            case DbService::ENDPOINT;
                 return new DbService($endpointUrl, $options, $transport);
-            case ClientHandler::ENDPOINT_MODEL;
+            case ModelService::ENDPOINT;
                 return new ModelService($endpointUrl, $options, $transport);
             default:
                 return new RipcordClient($endpointUrl, $options,$transport);

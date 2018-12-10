@@ -24,35 +24,35 @@ Usage
 - Instantiate a new client via instance itself :
 
 ```php
-use Ripoo\ClientHandler;
+use Ripoo\OdooClient;
 
 $host = 'example.odoo.com:8080';
 $db = 'example-database';
 $user = 'user@email.com';
 $password = 'yourpassword';
 
-$client = new ClientHandler($host, $db, $user, $password);
+$client = new OdooClient($host, $db, $user, $password);
 ```
 - Or you can instanciate new client via ClientFactory, to centralize configuration use good Design Patterns . 
 
 Basic sample for Magento2 :
 
 ```php
-class OdooManager
+class RipooClientProvider
 {
     private $clientFactory;
     private $client;
     private $scopeConfig;
     
     function __construct(
-        \Ripoo\ClientHandlerFactory $clientFactory,
+        \Ripoo\OdooClientFactory $clientFactory,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         $this->clientFactory = $clientFactory;
         $this->scopeConfig   = $scopeConfig;
     }
 
-    public function createClient() : \Ripoo\ClientHandler
+    public function createClient()
     {
         // TODO secure injections
         $odooUrl  = $this->scopeConfig->getValue('my/settings/odoo_url');
@@ -69,7 +69,7 @@ class OdooManager
         return $this->client;
     }
     
-    public function getClient() : \Ripoo\ClientHandler
+    public function getClient()
     {
         // You can force nenewing a Client based on createdAt
         if (!$this->client) {

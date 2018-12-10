@@ -3,8 +3,7 @@
 namespace Ripoo\Handler;
 
 use Ripoo\Service\CommonService;
-use Ripoo\Exception\AuthException;
-use Ripoo\Exception\ResponseFaultException;
+use Ripoo\Exception\{AuthException, ResponseFaultException};
 
 /**
  * Handle methods related to Odoo Common Service/Endpoint
@@ -23,7 +22,7 @@ trait CommonHandlerTrait
      */
     public function getCommonService() : CommonService
     {
-        return $this->getService(self::ENDPOINT_COMMON);
+        return $this->getService(CommonService::ENDPOINT);
     }
 
     /**

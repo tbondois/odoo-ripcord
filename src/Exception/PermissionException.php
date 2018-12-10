@@ -2,7 +2,6 @@
 
 namespace Ripoo\Exception;
 
-
 /**
  * When there is a problem with Odoo permissions
  * @author Thomas Bondois

@@ -3,10 +3,7 @@
 namespace Ripoo\Handler;
 
 use Ripoo\Service\ModelService;
-use Ripoo\Exception\RipooExceptionInterface;
-use Ripoo\Exception\AuthException;
-use Ripoo\Exception\ResponseFaultException;
-use Ripoo\Exception\ResponseStatusException;
+use Ripoo\Exception\{RipooExceptionInterface, AuthException, ResponseException, ResponseFaultException, ResponseStatusException};
 
 /**
  * Handle related to Odoo Model/Object Service/Endpoint
@@ -23,7 +20,7 @@ trait ModelHandlerTrait
      */
     public function getModelService() : ModelService
     {
-        return $this->getService(self::ENDPOINT_MODEL);
+        return $this->getService(ModelService::ENDPOINT);
     }
 
     /**

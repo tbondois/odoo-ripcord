@@ -18,6 +18,8 @@ use Ripcord\Client\Client as RipcordClient;
  */
 class DbService extends RipcordClient
 {
+    const ENDPOINT    = 'db';
+
     /**
      * Display last response XML content
      * @return string

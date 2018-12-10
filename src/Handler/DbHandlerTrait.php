@@ -3,7 +3,6 @@
 namespace Ripoo\Handler;
 
 use Ripoo\Service\DbService;
-use Ripoo\Exception\ResponseFaultException;
 
 /**
  * Handle methods related to Odoo Db Service/Endpoint
@@ -19,7 +18,7 @@ trait DbHandlerTrait
      */
     public function getDbService() : DbService
     {
-        return $this->getService(self::ENDPOINT_DB);
+        return $this->getService(DbService::ENDPOINT);
     }
 
     /**
