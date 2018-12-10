@@ -23,8 +23,8 @@ _
 - renamed method: `OdooClient::getCurrentRipcordClient()` become `getCurrentService()`
 - method: `CommonHandlerTrait::version()` accepts an optional parameter to filter array output based on an entry
 - constants: `OdooClient::ENDPOINT_****` now in `Service/****Service::ENPOINT`
-- README.md : more documentation
+- `README.md` : more documentation
 - minor internal refactoring
 - minor changes on `RipooException.php`, `ResponseFaultException`, `ResponseStatusException`
 ### Fixed
-- no return class type on `OdooClient::getCurrentRipcordClient()` for suppress warning on PHP 7.2 for child Service classes
+- no return class type on `OdooClient::getCurrentRipcordClient()` to suppress warning on PHP 7.2 for child Service classes

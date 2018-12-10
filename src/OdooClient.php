@@ -248,8 +248,8 @@ class OdooClient
     }
 
     /**
-     * @param int|string $key
-     * @return null|mixed scalar or array
+     * @param mixed $key
+     * @return mixed scalar or array
      * @throws ResponseEntryException
      */
     public function getResponseEntry($key)
@@ -257,7 +257,7 @@ class OdooClient
         if (is_array($this->response) && isset($this->response[$key])) {
             return $this->response[$key];
         } else {
-            throw new ResponseEntryException(sprintf("entry '%s' not found in %s response", $key, gettype($this->response)));
+            throw new ResponseEntryException(sprintf("entry '%s' not found in (%s) response", $key, gettype($this->response)));
         }
     }
 
