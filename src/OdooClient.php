@@ -257,7 +257,6 @@ class OdooClient
         if (is_array($this->response) && count($keys)) {
             $entryValue = $this->response;
             foreach ($keys as $key) {
-                d($entryValue, $key);
                 if (isset($entryValue[$key])) {
                     $entryValue = $entryValue[$key];
                 } else {
