@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _
 
 ## [1.5.0] - 2018-12-10
+
 ### Added
 - method: `OdooClient::model_execute_kw()`
 - method: `Service/****Service::getRawResponse()`
@@ -18,6 +19,7 @@ _
 - classes: `PermissionException.php`, `ResponseEntryException.php`
 - constants: `CommonHandlerTrait::VERSION_ENTRY_****`
 - this `CHANGELOG.md`
+
 ### Changed
 - renamed method: `OdooClient::formatResponse()` become `checkResponse()`
 - renamed method: `OdooClient::getCurrentRipcordClient()` become `getCurrentService()`
@@ -26,5 +28,6 @@ _
 - `README.md` : more documentation
 - minor internal refactoring
 - minor changes on `RipooException.php`, `ResponseFaultException`, `ResponseStatusException`
+
 ### Fixed
 - no return class type on `OdooClient::getCurrentRipcordClient()` to suppress warning on PHP 7.2 for child Service classes
