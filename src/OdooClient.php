@@ -254,8 +254,8 @@ class OdooClient
      */
     public function getResponseEntry(...$keys)
     {
-        if (is_array($this->response) && count($keys)) {
-            $entryValue = $this->response;
+        $entryValue = $this->getResponse();
+        if (is_array($entryValue) && count($keys)) {
             foreach ($keys as $key) {
                 if (isset($entryValue[$key])) {
                     $entryValue = $entryValue[$key];
