@@ -3,7 +3,7 @@
 namespace Ripoo\Handler;
 
 use Ripoo\Service\ModelService;
-use Ripoo\Exception\{RipooExceptionInterface, AuthException, ResponseException, ResponseFaultException, ResponseStatusException};
+use Ripoo\Exception\{RipooException, AuthException, ResponseException, ResponseFaultException, ResponseStatusException};
 
 /**
  * Handle related to Odoo Model/Object Service/Endpoint
@@ -61,21 +61,16 @@ trait ModelHandlerTrait
         if (!is_array($permission)) {
             $permission = [$permission];
         }
-        try {
-            $response = $this->getModelService()->execute_kw(
-                $this->db, $this->uid(), $this->password,
-                $model,
-                'check_access_rights',
-                $permission,
-                ['raise_exception' => $withExceptions]
-            );
+        $response = $this->getModelService()->execute_kw(
+            $this->db, $this->uid(), $this->password,
+            $model,
+            'check_access_rights',
+            $permission,
+            ['raise_exception' => $withExceptions]
+        );
 
-            //TODO analyse result fault etc
-            return (bool)$this->setResponse($response);
-
-        } catch (RipooExceptionInterface $exception) {
-        }
-        return false;
+        //TODO analyse result fault etc
+        return (bool)$this->setResponse($response);
     }
 
     /**
