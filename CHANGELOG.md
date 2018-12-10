@@ -31,8 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - method: `CommonHandlerTrait::version()` accepts an optional parameter to filter array output based on an entry
 - constants: `OdooClient::ENDPOINT_****` now in `Service/****Service::ENPOINT`
 - `README.md` : more documentation
-- minor internal refactoring
 - minor changes on `RipooException.php`, `ResponseFaultException`, `ResponseStatusException`
+- removed try/catch in `ModelHandlerTrait::check_access_rights()`
+- minor internal refactoring
 
 ### Fixed
 
