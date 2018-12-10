@@ -288,8 +288,8 @@ class OdooClient
     public function getArrayType($var) : string
     {
         if (!is_array($var)) {
-            if (is_object($var) && $var instanceof \Traversable) {
-                return self::ARRAY_TYPE_OBJECT; // Traversable object
+            if (is_object($var) && $var instanceof \Traversable && $var instanceof \Countable) {
+                return self::ARRAY_TYPE_OBJECT; // ~Collection object
             }
             return self::ARRAY_TYPE_NO_ARRAY; // Not an array
         }
