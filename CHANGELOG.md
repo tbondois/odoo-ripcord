@@ -19,14 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - method: `OdooClient::getResponseEntry()`
 - method: `OdooClient::setResponse()`
 - method: `OdooClient::isResponseSuccess()`
+- method : `CommonHandlerTrait::tryAuthenticate()`
 - classes: `PermissionException.php`, `ResponseEntryException.php`
 - constants: `CommonHandlerTrait::VERSION_ENTRY_****`
 - this `CHANGELOG.md`
 
 ### Changed
-
 - renamed method: `OdooClient::formatResponse()` become `checkResponse()`
 - renamed method: `OdooClient::getCurrentRipcordClient()` become `getCurrentService()`
+- renamed method : `CommonHandlerTrait::testAuthenticate()` become `checkAuthenticate()` 
 - method: `CommonHandlerTrait::version()` accepts an optional parameter to filter array output based on an entry
 - constants: `OdooClient::ENDPOINT_****` now in `Service/****Service::ENPOINT`
 - `README.md` : more documentation
