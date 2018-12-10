@@ -52,7 +52,7 @@ class RipooClientProvider
         $this->scopeConfig   = $scopeConfig;
     }
 
-    public function createClient()
+    public function createClient() : \Ripoo\OdooClient
     {
         // TODO secure injections
         $odooUrl  = $this->scopeConfig->getValue('my/settings/odoo_url');
@@ -69,7 +69,7 @@ class RipooClientProvider
         return $this->client;
     }
     
-    public function getClient()
+    public function getClient() : \Ripoo\OdooClient
     {
         // You can force nenewing a Client based on createdAt
         if (!$this->client) {
