@@ -295,7 +295,7 @@ class OdooClient
         }
         $count = count($var);
         if (!$count) {
-            return self::ARRAY_TYPE_EMPTY; // Empty, so we can define the Python type
+            return self::ARRAY_TYPE_EMPTY; // Empty, so we can't define the python type
         }
         if (array_keys($var) === range(0, $count-1)) {
             return self::ARRAY_TYPE_LIST; // python List or Tuple
