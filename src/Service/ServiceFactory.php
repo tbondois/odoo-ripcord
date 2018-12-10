@@ -26,7 +26,7 @@ class ServiceFactory
      * @return RipcordClient|CommonService|DbService|ModelService
      * @throws ConfigurationException
      */
-    public function create(string $endpoint, string $apiUrl, array $options = null, $transport = null) : RipcordClient
+    public function create(string $endpoint, string $apiUrl, array $options = null, $transport = null) // : RipcordClient //only php7.2 manage child classes without warning
     {
         $endpointUrl = OdooClient::trimSlash($apiUrl).'/'.OdooClient::trimSlash($endpoint);
 
