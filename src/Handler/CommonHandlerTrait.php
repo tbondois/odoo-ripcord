@@ -83,13 +83,17 @@ trait CommonHandlerTrait
     /**
      * Get version
      *
-     * @return array
+     * @param null|string $entry see constants like CommonService::VERSION_ENTRY_SERVER
+     * @return array|string
      * @throws ResponseException|ResponseFaultException
      */
-    public function version()
+    public function version($entry = null)
     {
         $response = $this->getCommonService()->version();
         //$response = $this->getCommonService()->version(); // TODO understand why crash Odoo
+        if ($entry && isset($response[$entry])) {
+            $response = $response[$entry];
+        }
         return $this->setResponse($response);
     }
 

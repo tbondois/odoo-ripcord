@@ -17,11 +17,16 @@ class CommonService extends RipcordClient
 {
     const ENDPOINT    = 'common';
 
+    const VERSION_ENTRY_SERVER = 'server_version';
+    const VERSION_ENTRY_SERVER_INFO = 'server_version_info';
+    const VERSION_ENTRY_SERVER_SERIE = 'server_serie';
+    const VERSION_ENTRY_PROTOCOL = 'protocol_version';
+
     /**
      * Display last response XML content
      * @return string
      */
-    function getLastResponse()
+    function getRawResponse()
     {
         return $this->_response;
     }

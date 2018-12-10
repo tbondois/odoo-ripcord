@@ -21,7 +21,7 @@ class ModelService extends RipcordClient
      * Display last response XML content
      * @return string
      */
-    function getLastResponse()
+    function getRawResponse()
     {
         return $this->_response;
     }
