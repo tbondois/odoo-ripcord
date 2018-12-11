@@ -5,6 +5,8 @@ Ripoo is a PHP7 XML-RPC client handler for [Odoo][1].
 
 Fork of [robroypt/odoo-client][2], using [darkaonline/ripcord][3], a PSR-compliance edition of [ripcord][4], the library used in example in the [Odoo External API documentation for PHP][6].
 
+This library is on [GitHub][7] and [Packagist][8].
+
 Supported versions
 -----------------------
 
@@ -188,7 +190,8 @@ your_db >>> models()
 [3]: https://github.com/DarkaOnLine/Ripcord
 [4]: https://github.com/poef/ripcord
 [6]: https://www.odoo.com/documentation/11.0/api_integration.html
-
+[7]: https://github.com/tbondois/odoo-ripcord
+[8]: https://packagist.org/packages/tbondois/odoo-ripcord
 License
 -----------------------
 MIT License. Copyright (c) 2018 Thomas Bondois. [See LICENSE file](LICENSE).
