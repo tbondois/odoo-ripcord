@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.5.1] - 2018-12-11
 ### Added
-- `.editorconfig`
+- file: `.editorconfig`
 
 ### Fixed
 - Fix missing assignation of `$this->currentEndpoint` in `OdooClient::getService()` when service already set
