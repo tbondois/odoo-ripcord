@@ -3,6 +3,7 @@
 namespace Ripoo;
 
 use Ripcord\Client\Client as RipcordClient;
+use Ripcord\Exceptions\ConfigurationException;
 use Ripoo\Handler\{CommonHandlerTrait, DbHandlerTrait, ModelHandlerTrait};
 use Ripoo\Service\{CommonService, DbService, ModelService, ServiceFactory};
 use Ripoo\Exception\{CodingException, ResponseException, ResponseEntryException, ResponseFaultException, ResponseStatusException};
@@ -156,16 +157,14 @@ class OdooClient
      *
      * @param string $endpoint The api endpoint
      * @return RipcordClient|CommonService|DbService|ModelService
-     * @throws \Ripcord\Exceptions\ConfigurationException
+     * @throws ConfigurationException
      */
     public function getService(string $endpoint) // : RipcordClient //only php7.2 manage child classes without warning
     {
         $endpoint = self::trimSlash($endpoint);
-        if (!empty($this->services[$endpoint])) {
-            return $this->services[$endpoint];
+        if (empty($this->services[$endpoint])) {
+            $this->services[$endpoint] = $this->serviceFactory->create($endpoint, $this->apiUrl);
         }
-        //$this->services[$endpoint] = Ripcord::client($this->url.'/'.$endpoint);
-        $this->services[$endpoint] = $this->serviceFactory->create($endpoint, $this->apiUrl);
         $this->currentEndpoint = $endpoint;
         return $this->services[$endpoint];
     }
