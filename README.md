@@ -192,6 +192,8 @@ your_db >>> models()
 [6]: https://www.odoo.com/documentation/11.0/api_integration.html
 [7]: https://github.com/tbondois/odoo-ripcord
 [8]: https://packagist.org/packages/tbondois/odoo-ripcord
+
+
 License
 -----------------------
 MIT License. Copyright (c) 2018 Thomas Bondois. [See LICENSE file](LICENSE).
