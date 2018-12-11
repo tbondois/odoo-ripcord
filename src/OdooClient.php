@@ -248,7 +248,7 @@ class OdooClient
     }
 
     /**
-     * @param mixed ...$keys
+     * @param string|int ...$keys
      * @return mixed scalar or array
      * @throws ResponseEntryException
      */
