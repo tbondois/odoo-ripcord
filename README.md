@@ -20,6 +20,18 @@ Installation
 composer require tbondois/odoo-ripcord
 ```
 
+Update
+-----------------------
+- To update all your libraries included in your composer.json
+```bash
+composer update
+```
+
+- But if you want to update JUST this library :
+```bash
+composer update tbondois/odoo-ripcord --with-dependencies
+```
+
 Usage
 -----------------------
 
