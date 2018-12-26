@@ -18,9 +18,7 @@
     "readme": "README.md",
     "homepage": "https://packagist.org/packages/tbondois/odoo-ripcord",
     "authors": [
-        {
-            "name": "Thomas Bondois",
-            "homepage": "https://thomas.bondois.info"
+        {   "name": "Thomas Bondois"
         }
     ],
     "keywords": [

@@ -45,6 +45,24 @@ trait ModelHandlerTrait
     }
 
     /**
+     * @param string $model
+     * @param string $method
+     * @param mixed ...$args
+     * @return mixed
+     * @author Thomas Bondois <thomas.bondois@agence-tbd.com>
+     */
+    public function model_execute_splat(string $model, string $method, ...$args)
+    {
+        $response = $this->getModelService()->execute(
+            $this->db, $this->uid(), $this->password,
+            $model,
+            $method,
+            $args
+        );
+        return $this->setResponse($response);
+    }
+
+    /**
      * @see https://odoo-restapi.readthedocs.io/en/latest/calling_methods/check_access_rights.html
      *
      * @param string $model
@@ -153,7 +171,7 @@ trait ModelHandlerTrait
      */
     public function search_read(string $model, array $criteria, array $fields = [], int $limit = 100, $order = '')
     {
-        $response = $this->getModelService()->execute_kw(
+        $response = $this->model_execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search_read',
