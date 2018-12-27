@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - method: `ModelHandlerTrait::model_execute_splat()`
+- method: `OdooClient::getCurrentEndpoint()`
 
 ## [1.5.1] - 2018-12-11
 ### Added

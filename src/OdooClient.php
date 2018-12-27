@@ -149,6 +149,26 @@ class OdooClient
     }
 
     /**
+     * @return null|string
+     */
+    public function getCurrentEndpoint()
+    {
+        return $this->currentEndpoint;
+    }
+
+    /**
+     * @return RipcordClient|CommonService|DbService|ModelService
+     * @throws CodingException
+     */
+    public function getCurrentService() // : RipcordClient //only php7.2 manage child classes without warning
+    {
+        if (!$this->currentEndpoint || empty($this->services[$this->currentEndpoint])) {
+            throw new CodingException("Need to make a first call before getting the current client");
+        }
+        return $this->services[$this->currentEndpoint];
+    }
+
+    /**
      * Get XmlRpc Client, manage cache
      *
      * This method returns an XmlRpc Client for the requested endpoint.
@@ -167,18 +187,6 @@ class OdooClient
         }
         $this->currentEndpoint = $endpoint;
         return $this->services[$endpoint];
-    }
-
-    /**
-     * @return RipcordClient|CommonService|DbService|ModelService
-     * @throws CodingException
-     */
-    public function getCurrentService() // : RipcordClient //only php7.2 manage child classes without warning
-    {
-        if (!$this->currentEndpoint || empty($this->services[$this->currentEndpoint])) {
-            throw new CodingException("Need to make a first call before getting the current client");
-        }
-        return $this->services[$this->currentEndpoint];
     }
 
     /**
