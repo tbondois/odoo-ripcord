@@ -6,16 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## [1.6.0] - 2018-12-11
+
 ### Added
 - method: `ModelHandlerTrait::model_execute_splat()`
 - method: `OdooClient::getCurrentEndpoint()`
+- require `ext-xmlrpc` in `composer.json`
 
 ## [1.5.1] - 2018-12-11
+
 ### Added
 - file: `.editorconfig`
 
 ### Fixed
 - Fix missing assignation of `$this->currentEndpoint` in `OdooClient::getService()` when service already set
+
 
 ## [1.5.0] - 2018-12-10
 

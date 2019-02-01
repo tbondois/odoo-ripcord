@@ -4,6 +4,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.0",
+        "ext-xmlrpc": "*",
         "darkaonline/ripcord": "^0.1.6"
     },
     "require-dev": {
