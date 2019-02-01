@@ -171,7 +171,7 @@ trait ModelHandlerTrait
      */
     public function search_read(string $model, array $criteria, array $fields = [], int $limit = 100, $order = '')
     {
-        $response = $this->model_execute_kw(
+        $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search_read',
