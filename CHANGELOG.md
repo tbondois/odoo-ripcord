@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-## [1.6.0] - 2018-12-11
+## [1.6.0] - 2019-02-01
 
 ### Added
 - method: `ModelHandlerTrait::model_execute_splat()`
