@@ -103,7 +103,7 @@ trait ModelHandlerTrait
      * @return array Array of model id's
      * @throws AuthException|ResponseException
      */
-    public function search(string $model, array $criteria = [], $offset = 0, $limit = 100, $order = '')
+    public function search(string $model, array $criteria = [], $offset = 0, $limit = 0, $order = '')
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -169,7 +169,7 @@ trait ModelHandlerTrait
      * @return array An array of models
      * @throws AuthException|ResponseException
      */
-    public function search_read(string $model, array $criteria, array $fields = [], int $limit = 100, $order = '')
+    public function search_read(string $model, array $criteria, array $fields = [], int $limit = 0, $order = '')
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,

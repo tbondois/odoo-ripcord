@@ -29,8 +29,9 @@ composer update
 
 - But if you want to update JUST this library :
 ```bash
-composer update tbondois/odoo-ripcord --with-dependencies
+composer update tbondois/odoo-ripcord
 ```
+Add ` --with-dependencies` to also update others libraries used by this one.
 
 Usage
 -----------------------

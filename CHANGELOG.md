@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.6.2] - 2019-02-12
+
+### Fixed
+- `ModelHandlerTrait::search()`, `ModelHandlerTrait::search_read()` : parameter `$limit` set to default 0 (no limit) instead of `100`
 
 ## [1.6.1] - 2019-02-01
 
-### Fixed
+### Fixed
 - Error introduced in `ModelHandlerTrait::search_read()`
 
 ## [1.6.0] - 2019-02-01
