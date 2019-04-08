@@ -142,7 +142,7 @@ trait ModelHandlerTrait
      * @param array $ids Array of model (external) id's
      * @param array $fields Index array of fields to fetch, an empty array fetches all fields
      *
-     * @return array An array of model internal ids
+     * @return array An array of models
      * @throws AuthException|ResponseException
      */
     public function read(string $model, array $ids, array $fields = [])
