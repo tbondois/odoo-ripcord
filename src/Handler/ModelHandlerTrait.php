@@ -26,13 +26,13 @@ trait ModelHandlerTrait
     /**
      * @param string $model
      * @param string $method
-     * @param array $args argument list, ordered. sequential-array (Python-List) containing, for each numeric index, scalar or array
+     * @param array|null $args argument list, ordered. sequential-array (Python-List) containing, for each numeric index, scalar or array
      * @param array|null $kwargs extra argument list, named. associative-array  (Python-Dictionary) containing, for each keyword, scalar or array
      * @return mixed
      *
      * @author Thomas Bondois
      */
-    public function model_execute_kw(string $model, string $method, array $args = [], array $kwargs = null)
+    public function model_execute_kw(string $model, string $method, $args = null, $kwargs = null)
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
