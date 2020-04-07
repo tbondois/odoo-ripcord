@@ -99,18 +99,19 @@ trait ModelHandlerTrait
      * @param integer $offset Offset
      * @param integer $limit Max results
      * @param string $order
+     * @param array $context Array of context
      *
      * @return array Array of model id's
      * @throws AuthException|ResponseException
      */
-    public function search(string $model, array $criteria = [], $offset = 0, $limit = 0, $order = '')
+    public function search(string $model, array $criteria = [], $offset = 0, $limit = 0, $order = '', array $context = [])
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search',
             [$criteria],
-            ['offset' => $offset, 'limit' => $limit, 'order' => $order]
+            ['offset' => $offset, 'limit' => $limit, 'order' => $order, 'context' => $context]
         );
         return $this->setResponse($response);
     }
@@ -120,17 +121,19 @@ trait ModelHandlerTrait
      *
      * @param string $model Model
      * @param array $criteria Array of criteria
+     * @param array $context Array of context
      *
      * @return int
      * @throws AuthException|ResponseException
      */
-    public function search_count(string $model, array $criteria = [])
+    public function search_count(string $model, array $criteria = [], array $context = [])
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search_count',
-            [$criteria]
+            [$criteria],
+            ['context' => $context]
         );
         return $this->setResponse($response);
     }
@@ -141,18 +144,19 @@ trait ModelHandlerTrait
      * @param string $model Model
      * @param array $ids Array of model (external) id's
      * @param array $fields Index array of fields to fetch, an empty array fetches all fields
+     * @param array $context Array of context
      *
      * @return array An array of models
      * @throws AuthException|ResponseException
      */
-    public function read(string $model, array $ids, array $fields = [])
+    public function read(string $model, array $ids, array $fields = [], array $context = [])
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'read',
             [$ids],
-            ['fields' => $fields]
+            ['fields' => $fields, 'context' => $context]
         );
         return $this->setResponse($response);
     }
@@ -165,11 +169,12 @@ trait ModelHandlerTrait
      * @param array $fields Index array of fields to fetch, an empty array fetches all fields
      * @param integer $limit Max results
      * @param string $order
+     * @param array $context Array of context
      *
      * @return array An array of models
      * @throws AuthException|ResponseException
      */
-    public function search_read(string $model, array $criteria, array $fields = [], int $limit = 0, $order = '')
+    public function search_read(string $model, array $criteria, array $fields = [], int $limit = 0, $order = '', array $context = [])
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -179,6 +184,7 @@ trait ModelHandlerTrait
             [   'fields' => $fields,
                 'limit'  => $limit,
                 'order'  => $order,
+                'context' => $context,
             ]
         );
         return $this->setResponse($response);
@@ -213,17 +219,19 @@ trait ModelHandlerTrait
      *
      * @param string $model Model
      * @param array $data Array of fields with data (format: ['field' => 'value'])
+     * @param array $context Array of context
      *
      * @return int Created model id
      * @throws AuthException|ResponseException
      */
-    public function create(string $model, array $data)
+    public function create(string $model, array $data, array $context = [])
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'create',
-            [$data]
+            [$data],
+            ['context' => $context]
         );
         return $this->setResponse($response);
     }
@@ -234,12 +242,13 @@ trait ModelHandlerTrait
      * @param string $model Model
      * @param array $ids Model ids to update
      * @param array $fields A associative array (format: ['field' => 'value'])
+     * @param array $context Array of context
      *
      * @return array
      * @throws AuthException
      * @throws ResponseFaultException|ResponseStatusException
      */
-    public function write(string $model, array $ids, array $fields)
+    public function write(string $model, array $ids, array $fields, array $context = [])
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
@@ -247,7 +256,8 @@ trait ModelHandlerTrait
             'write',
             [   $ids,
                 $fields,
-            ]
+            ],
+            ['context' => $context]
         );
         return $this->setResponse($response);
     }
@@ -257,17 +267,19 @@ trait ModelHandlerTrait
      *
      * @param string $model Model
      * @param array $ids Array of model id's
+     * @param array $context Array of context
      *
      * @return boolean successful or not
      * @throws AuthException|ResponseException
      */
-    public function unlink(string $model, array $ids)
+    public function unlink(string $model, array $ids, array $context = [])
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'unlink',
-            [$ids]
+            [$ids],
+            ['context' => $context]
         );
         return $this->setResponse($response);
     }
