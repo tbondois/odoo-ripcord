@@ -30,7 +30,7 @@ If you find any incompatibilities, please create an issue or submit a pull reque
 Changelog
 -----------------------
 
-See [CHHANGELOG.md](CHANGELOG.md)
+See [CHANGELOG.md](CHANGELOG.md)
 
 
 Installation

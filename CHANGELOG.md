@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `ModelHandlerTrait` : management of by an extra parameter `array $context = []` for all methods. Thanks to [gaelg](https://github.com/gaelg) for the PR !
+- Versioning of `composer.lock` 
 
 ## [1.6.2] - 2019-02-12
 

@@ -1,7 +1,5 @@
 /vendor/
 composer.phar
-composer.lock
 phpunit.xml
-/*.php
 /.idea
 *.bk
