@@ -9,6 +9,7 @@ This library is on [GitHub][7] and [Packagist][8].
 
 - [Ripoo (odoo-ripcord)](#ripoo-odoo-ripcord)
   - [Supported versions](#supported-versions)
+  - [Changelog](#changelog)
   - [Installation](#installation)
   - [Update](#update)
   - [Usage](#usage)
@@ -24,6 +25,12 @@ Supported versions
 This library should work with all versions of Odoo, at least between 8.0 and [14.0][9], Community & Enterprise Editions. I personnaly tested it only with **11.0** but their API is the same.
 It can be used in all PHP frameworks, like Symfony, Laravel or Magento2.
 If you find any incompatibilities, please create an issue or submit a pull request.
+
+
+Changelog
+-----------------------
+
+See [CHHANGELOG.md](CHANGELOG.md)
 
 
 Installation
