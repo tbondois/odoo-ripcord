@@ -3,15 +3,28 @@ Ripoo (odoo-ripcord)
 
 Ripoo is a PHP7 XML-RPC client handler for [Odoo][1]. 
 
-Fork of [robroypt/odoo-client][2], using [darkaonline/ripcord][3], a PSR-compliance edition of [ripcord][4], the library used in example in the [Odoo External API documentation for PHP][6].
+Forked from [robroypt/odoo-client][2], itself using [darkaonline/ripcord][3], Ripoo is a PSR-compliance edition of [ripcord][4], the library used in example in the [Odoo External API documentation for PHP][6].
 
 This library is on [GitHub][7] and [Packagist][8].
+
+- [Ripoo (odoo-ripcord)](#ripoo-odoo-ripcord)
+  - [Supported versions](#supported-versions)
+  - [Installation](#installation)
+  - [Update](#update)
+  - [Usage](#usage)
+    - [xmlrpc/2/common endpoint](#xmlrpc2common-endpoint)
+    - [xmlrpc/2/object endpoint](#xmlrpc2object-endpoint)
+  - [How to know the model names](#how-to-know-the-model-names)
+  - [License](#license)
+
 
 Supported versions
 -----------------------
 
-This library should work with all versions of Odoo, **at least between 8.0 and 11.0**, Community & Enterprise Editions. It can be used in all PHP frameworks, like Symfony, Laravel or Magento2.
+This library should work with all versions of Odoo, at least between 8.0 and [14.0][9], Community & Enterprise Editions. I personnaly tested it only with **11.0** but their API is the same.
+It can be used in all PHP frameworks, like Symfony, Laravel or Magento2.
 If you find any incompatibilities, please create an issue or submit a pull request.
+
 
 Installation
 -----------------------
@@ -22,6 +35,7 @@ composer require tbondois/odoo-ripcord
 
 Update
 -----------------------
+
 - To update all your libraries included in your composer.json
 ```bash
 composer update
@@ -205,7 +219,7 @@ your_db >>> models()
 [6]: https://www.odoo.com/documentation/11.0/api_integration.html
 [7]: https://github.com/tbondois/odoo-ripcord
 [8]: https://packagist.org/packages/tbondois/odoo-ripcord
-
+[9]: https://www.odoo.com/documentation/14.0/developer/misc/api/odoo.html
 
 License
 -----------------------
