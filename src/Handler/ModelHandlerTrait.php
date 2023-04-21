@@ -167,6 +167,7 @@ trait ModelHandlerTrait
      * @param string $model Model
      * @param array $criteria Array of criteria
      * @param array $fields Index array of fields to fetch, an empty array fetches all fields
+     * @param integer $offset Offset
      * @param integer $limit Max results
      * @param string $order
      * @param array $context Array of context
@@ -174,14 +175,16 @@ trait ModelHandlerTrait
      * @return array An array of models
      * @throws AuthException|ResponseException
      */
-    public function search_read(string $model, array $criteria, array $fields = [], int $limit = 0, $order = '', array $context = [])
+    public function search_read(string $model, array $criteria, array $fields = [], int $offset = 0, int $limit = 0, $order = '', array $context = [])
     {
         $response = $this->getModelService()->execute_kw(
             $this->db, $this->uid(), $this->password,
             $model,
             'search_read',
             [$criteria],
-            [   'fields' => $fields,
+            [
+                'fields' => $fields,
+                'offset'  => $offset,
                 'limit'  => $limit,
                 'order'  => $order,
                 'context' => $context,
