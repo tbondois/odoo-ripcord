@@ -1,11 +1,11 @@
 {
     "name": "tbondois/odoo-ripcord",
-    "description": "Ripoo : a PHP7 XML-RPC client handler for Odoo External API",
+    "description": "Ripoo : a PHP8 XML-RPC client handler for Odoo External API",
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.0",
-        "ext-xmlrpc": "*",
-        "darkaonline/ripcord": "^0.1.6"
+        "phpxmlrpc/polyfill-xmlrpc": "*@rc",
+        "darkaonline/ripcord": "^0.1.8"
     },
     "require-dev": {
         "kint-php/kint": "*"

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9c1bce4a2e3b26e259d60f79592c6dda",
+    "content-hash": "20ee6162205b7ecd862d8e087699496a",
     "packages": [
         {
             "name": "darkaonline/ripcord",
@@ -48,6 +48,10 @@
                 "xml",
                 "xmlrpc"
             ],
+            "support": {
+                "issues": "https://github.com/DarkaOnLine/Ripcord/issues",
+                "source": "https://github.com/DarkaOnLine/Ripcord/tree/v0.1.8"
+            },
             "funding": [
                 {
                     "url": "https://github.com/DarkaOnLine",
@@ -55,42 +59,154 @@
                 }
             ],
             "time": "2021-03-25T06:28:19+00:00"
+        },
+        {
+            "name": "phpxmlrpc/phpxmlrpc",
+            "version": "4.11.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gggeek/phpxmlrpc.git",
+                "reference": "06b9d7275d637f6859527091a54a5edfe8a16749"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gggeek/phpxmlrpc/zipball/06b9d7275d637f6859527091a54a5edfe8a16749",
+                "reference": "06b9d7275d637f6859527091a54a5edfe8a16749",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xml": "*",
+                "php": "^5.4.0 || ^7.0 || ^8.0"
+            },
+            "conflict": {
+                "phpxmlrpc/extras": "<= 1.0.0-beta2",
+                "phpxmlrpc/jsonrpc": "<= 1.0.0-beta1"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "ext-dom": "*",
+                "ext-mbstring": "*",
+                "phpunit/phpunit": "^4.8 || ^5.0 || ^8.5.14",
+                "phpunit/phpunit-selenium": "*",
+                "yoast/phpunit-polyfills": "*"
+            },
+            "suggest": {
+                "ext-curl": "Needed for HTTPS, HTTP2 and HTTP 1.1 support, NTLM Auth etc...",
+                "ext-mbstring": "Needed to allow reception of requests/responses in character sets other than ASCII,LATIN-1,UTF-8",
+                "ext-zlib": "Needed for sending compressed requests and receiving compressed responses, if cURL is not available",
+                "phpxmlrpc/extras": "Adds more featured Server classes, including self-documenting and ajax-enabled servers",
+                "phpxmlrpc/jsonrpc": "Adds support for the JSON-RPC protocol"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PhpXmlRpc\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "A php library for building xmlrpc clients and servers",
+            "homepage": "https://gggeek.github.io/phpxmlrpc/",
+            "keywords": [
+                "webservices",
+                "xml-rpc",
+                "xmlrpc"
+            ],
+            "support": {
+                "issues": "https://github.com/gggeek/phpxmlrpc/issues",
+                "source": "https://github.com/gggeek/phpxmlrpc/tree/4.11.1"
+            },
+            "time": "2025-01-17T17:04:37+00:00"
+        },
+        {
+            "name": "phpxmlrpc/polyfill-xmlrpc",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gggeek/polyfill-xmlrpc.git",
+                "reference": "2c79dc261569a70ef9cd047b234a49be23598a3d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gggeek/polyfill-xmlrpc/zipball/2c79dc261569a70ef9cd047b234a49be23598a3d",
+                "reference": "2c79dc261569a70ef9cd047b234a49be23598a3d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4.0 || ^7.0 || ^8.0",
+                "phpxmlrpc/phpxmlrpc": "^4.10.2"
+            },
+            "provide": {
+                "ext-xmlrpc": "*"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "phpunit/phpunit": "^4.8 || ^5.0 || ^8.5.12",
+                "phpunit/phpunit-selenium": "*",
+                "yoast/phpunit-polyfills": "*"
+            },
+            "suggest": {
+                "ext-iconv": "Required when using anything other than utf-8 as target encoding for the decoded xml",
+                "ext-xmlrpc": "Recommended for running the test suite. We can not declare it in require-dev because it is missing in php 8"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "PhpXmlRpc\\Polyfill\\XmlRpc\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "A pure-php reimplementation of the API exposed by the native XML-RPC extension",
+            "keywords": [
+                "extension",
+                "php",
+                "polyfill",
+                "webservices",
+                "xmlrpc"
+            ],
+            "support": {
+                "issues": "https://github.com/gggeek/polyfill-xmlrpc/issues",
+                "source": "https://github.com/gggeek/polyfill-xmlrpc/tree/1.0.0"
+            },
+            "time": "2024-04-15T11:49:22+00:00"
         }
     ],
     "packages-dev": [
         {
             "name": "kint-php/kint",
-            "version": "3.3",
+            "version": "6.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kint-php/kint.git",
-                "reference": "335ac1bcaf04d87df70d8aa51e8887ba2c6d203b"
+                "reference": "2bd133be30a0d4f5523e3d7d8e94b788d95978e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kint-php/kint/zipball/335ac1bcaf04d87df70d8aa51e8887ba2c6d203b",
-                "reference": "335ac1bcaf04d87df70d8aa51e8887ba2c6d203b",
+                "url": "https://api.github.com/repos/kint-php/kint/zipball/2bd133be30a0d4f5523e3d7d8e94b788d95978e6",
+                "reference": "2bd133be30a0d4f5523e3d7d8e94b788d95978e6",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.6"
+                "php": ">=7.4"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.0",
-                "phpunit/phpunit": "^4.0",
-                "seld/phar-utils": "^1.0",
-                "symfony/finder": "^2.0 || ^3.0 || ^4.0",
-                "vimeo/psalm": "^3.0"
+                "friendsofphp/php-cs-fixer": "^3",
+                "phpunit/phpunit": "^9",
+                "seld/phar-utils": "^1",
+                "symfony/finder": ">=7",
+                "vimeo/psalm": "^5"
             },
             "suggest": {
-                "ext-ctype": "Simple data type tests",
-                "ext-iconv": "Provides fallback detection for ambiguous legacy string encodings such as the Windows and ISO 8859 code pages",
-                "ext-mbstring": "Provides string encoding detection",
-                "kint-php/kint-js": "Provides a simplified dump to console.log()",
-                "kint-php/kint-twig": "Provides d() and s() functions in twig templates",
-                "symfony/polyfill-ctype": "Replacement for ext-ctype if missing",
-                "symfony/polyfill-iconv": "Replacement for ext-iconv if missing",
-                "symfony/polyfill-mbstring": "Replacement for ext-mbstring if missing"
+                "kint-php/kint-helpers": "Provides extra helper functions",
+                "kint-php/kint-twig": "Provides d() and s() functions in twig templates"
             },
             "type": "library",
             "autoload": {
@@ -111,33 +227,33 @@
                     "homepage": "https://github.com/jnvsor"
                 },
                 {
-                    "name": "Rokas Šleinius",
-                    "homepage": "https://github.com/raveren"
-                },
-                {
                     "name": "Contributors",
                     "homepage": "https://github.com/kint-php/kint/graphs/contributors"
                 }
             ],
-            "description": "Kint - debugging tool for PHP developers",
+            "description": "Kint - Advanced PHP dumper",
             "homepage": "https://kint-php.github.io/kint/",
             "keywords": [
                 "debug",
-                "kint",
-                "php"
+                "dump"
             ],
-            "time": "2019-10-17T18:05:24+00:00"
+            "support": {
+                "issues": "https://github.com/kint-php/kint/issues",
+                "source": "https://github.com/kint-php/kint/tree/6.0.1"
+            },
+            "time": "2025-01-01T23:10:26+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "phpxmlrpc/polyfill-xmlrpc": 5
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.0",
-        "ext-xmlrpc": "*"
+        "php": ">=7.0"
     },
-    "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }
