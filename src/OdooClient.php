@@ -62,6 +62,12 @@ class OdooClient
     private $password;
 
     /**
+     * RPC imeout
+     * @var int
+     */
+    private $timeout;
+
+    /**
      * micro timestamp
      * @var float
      */
@@ -100,9 +106,10 @@ class OdooClient
      * @param null|string $db PostgreSQL database of Odoo containing Odoo tables
      * @param null|string $user The username (Odoo 11 : is email)
      * @param null|string $password Password of the user
+     * @param null|int    $timeout Connection timeout (defaults to 5 seconds)
      * @param null|string $apiPath if not using xmlrpc/2
      */
-    public function __construct(string $baseUrl, $db = null, $user = null, $password = null, $apiPath = null)
+    public function __construct(string $baseUrl, $db = null, $user = null, $password = null, $apiPath = null, int $timeout = null)
     {
         // use customer or default API :
         $apiPath   = self::trimSlash($apiPath ?? self::DEFAULT_API);
@@ -116,6 +123,7 @@ class OdooClient
         $this->password  = $password;
         $this->createdAt = microtime(true);
         $this->pid       = '#'.$apiPath.'-'.microtime(true)."-".mt_rand(10000, 99000);
+        $this->timeout   = $timeout ?? 5;
 
         $this->serviceFactory = new ServiceFactory();
     }
@@ -183,7 +191,8 @@ class OdooClient
     {
         $endpoint = self::trimSlash($endpoint);
         if (empty($this->services[$endpoint])) {
-            $this->services[$endpoint] = $this->serviceFactory->create($endpoint, $this->apiUrl);
+            $this->services[$endpoint] = $this->serviceFactory->create($endpoint, $this->apiUrl, ['http' => ['timeout' => $this->timeout]]
+        );
         }
         $this->currentEndpoint = $endpoint;
         return $this->services[$endpoint];
