@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "20ee6162205b7ecd862d8e087699496a",
+    "content-hash": "009662795c75ffd020c523c895974c73",
     "packages": [
         {
             "name": "darkaonline/ripcord",
-            "version": "v0.1.8",
+            "version": "v0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DarkaOnLine/Ripcord.git",
-                "reference": "9cfed0e7015663c9739d4eb927952f040c8e8280"
+                "reference": "e511f0569aff024b4a039fedc06c3101fe45ab99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DarkaOnLine/Ripcord/zipball/9cfed0e7015663c9739d4eb927952f040c8e8280",
-                "reference": "9cfed0e7015663c9739d4eb927952f040c8e8280",
+                "url": "https://api.github.com/repos/DarkaOnLine/Ripcord/zipball/e511f0569aff024b4a039fedc06c3101fe45ab99",
+                "reference": "e511f0569aff024b4a039fedc06c3101fe45ab99",
                 "shasum": ""
             },
             "require": {
@@ -50,7 +50,7 @@
             ],
             "support": {
                 "issues": "https://github.com/DarkaOnLine/Ripcord/issues",
-                "source": "https://github.com/DarkaOnLine/Ripcord/tree/v0.1.8"
+                "source": "https://github.com/DarkaOnLine/Ripcord/tree/v0.3"
             },
             "funding": [
                 {
@@ -58,7 +58,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-03-25T06:28:19+00:00"
+            "time": "2025-02-26T17:28:57+00:00"
         },
         {
             "name": "phpxmlrpc/phpxmlrpc",
