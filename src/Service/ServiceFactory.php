@@ -31,7 +31,7 @@ class ServiceFactory
         $endpointUrl = OdooClient::trimSlash($apiUrl).'/'.OdooClient::trimSlash($endpoint);
 
         if (!$transport) {
-            $transport = new Stream();
+            $transport = new Stream($options);
         }
         switch ($endpoint) {
             case CommonService::ENDPOINT;

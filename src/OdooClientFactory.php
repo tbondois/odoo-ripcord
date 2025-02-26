@@ -12,9 +12,9 @@ namespace Ripoo;
  */
 class OdooClientFactory
 {
-    public function create(string $baseUrl, $db = null, $user = null, $password = null, $apiPath  = null) : OdooClient
+    public function create(string $baseUrl, $db = null, $user = null, $password = null, $apiPath  = null, int $timeout = null) : OdooClient
     {
-        return new OdooClient($baseUrl, $db, $user, $password, $apiPath);
+        return new OdooClient($baseUrl, $db, $user, $password, $apiPath, $timeout);
     }
 
     /**
@@ -24,13 +24,14 @@ class OdooClientFactory
      * @param string $db
      * @param string $user
      * @param string $password
+     * @param int    $timeout
      * @param null|string $apiPath
      *
      * @return OdooClient
      */
-    public function createAuthenticated(string $baseUrl, string $db , string $user, string $password, $apiPath  = null) : OdooClient
+    public function createAuthenticated(string $baseUrl, string $db , string $user, string $password, $apiPath  = null, int $timeout = null) : OdooClient
     {
-        return $this->create($baseUrl, $db, $user, $password, $apiPath);
+        return $this->create($baseUrl, $db, $user, $password, $apiPath, $timeout);
     }
 
     /**
@@ -38,11 +39,12 @@ class OdooClientFactory
      *
      * @param string $baseUrl
      * @param null|string $apiPath
+     * @param int $timeout
      * @return OdooClient
      */
-    public function createAnonymous($baseUrl, $apiPath = null) : OdooClient
+    public function createAnonymous($baseUrl, $apiPath = null, int $timeout) : OdooClient
     {
-        return $this->create($baseUrl, null, null, null, $apiPath);
+        return $this->create($baseUrl, null, null, null, $apiPath, $timeout);
     }
 
 } // end class

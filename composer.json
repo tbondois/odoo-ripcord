@@ -20,6 +20,11 @@
     "homepage": "https://packagist.org/packages/tbondois/odoo-ripcord",
     "authors": [
         {   "name": "Thomas Bondois"
+        },
+        {
+            "name": "Matt Visnovsky",
+            "email": "matt@visnovsky.us",
+            "homepage": "https://www.visnovsky.us"
         }
     ],
     "keywords": [
