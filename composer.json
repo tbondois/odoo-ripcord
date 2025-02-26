@@ -5,7 +5,7 @@
     "require": {
         "php": ">=7.0",
         "phpxmlrpc/polyfill-xmlrpc": "*@rc",
-        "darkaonline/ripcord": "^0.1.8"
+        "darkaonline/ripcord": "^0.3"
     },
     "require-dev": {
         "kint-php/kint": "*"
